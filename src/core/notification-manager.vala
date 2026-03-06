@@ -8,15 +8,6 @@
 
 namespace Ft
 {
-    public interface NotificationsProvider : Ft.Provider
-    {
-        public abstract string name { get; }
-        public abstract string vendor { get; }
-        public abstract string version { get; }
-        public abstract bool   has_actions { get; }
-    }
-
-
     private enum NotificationType
     {
         NULL,
@@ -25,44 +16,6 @@ namespace Ft
         TIME_BLOCK_STARTED,
         TIME_BLOCK_RUNNING,
         CONFIRM_ADVANCEMENT
-    }
-
-
-    public interface NotificationBackend : GLib.Object
-    {
-        public abstract void withdraw_notification (string id);
-
-        public abstract void send_notification (string?           id,
-                                                GLib.Notification notification);
-    }
-
-
-    private class DefaultNotificationBackend : GLib.Object, Ft.NotificationBackend
-    {
-        private GLib.Application? application = null;
-
-        construct
-        {
-            this.application = GLib.Application.get_default ();
-        }
-
-        public void withdraw_notification (string id)
-        {
-            this.application?.withdraw_notification (id);
-        }
-
-        public void send_notification (string?           id,
-                                       GLib.Notification notification)
-        {
-            this.application?.send_notification (id, notification);
-        }
-
-        public override void dispose ()
-        {
-            this.application = null;
-
-            base.dispose ();
-        }
     }
 
 
@@ -79,10 +32,10 @@ namespace Ft
          */
         private const uint WITHDRAW_TIMEOUT_SECONDS = 30;
 
-        private const uint SCREEN_OVERLAY_OPEN_TIMEOUT = 1000;
+        private const uint SCREEN_OVERLAY_OPEN_TIMEOUT = 1000;  // milliseconds
 
-        private const int64 TIME_BLOCK_ABOUT_TO_END_MIN_DURATION = 10 * Ft.Interval.SECOND;
-        private const int64 TIME_BLOCK_ABOUT_TO_END_MAX_DURATION = 15 * Ft.Interval.SECOND;
+        private const int64 TIME_BLOCK_ABOUT_TO_END_SHORTER_TIMEOUT = 10 * Ft.Interval.SECOND;
+        private const int64 TIME_BLOCK_ABOUT_TO_END_LONGER_TIMEOUT = 15 * Ft.Interval.SECOND;
         private const int64 TIME_BLOCK_ABOUT_TO_END_TOLERANCE = 5 * Ft.Interval.SECOND;
 
         public Ft.Timer timer {
@@ -141,6 +94,23 @@ namespace Ft
         private weak Ft.TimeBlock?      notification_time_block = null;
         private bool                    debug = false;
 
+        construct
+        {
+            this.settings = Ft.get_settings ();
+            this.idle_monitor = new Ft.IdleMonitor ();
+            this.lock_screen = new Ft.LockScreen ();
+            this.debug = Ft.is_test ();
+
+            this.settings_changed_id = this.settings.changed.connect (this.on_settings_changed);
+
+            this.schedule_announcements ();
+            this.update (true);
+
+            if (this.notification == null) {
+                this._backend.withdraw_notification ("timer");
+            }
+        }
+
         public NotificationManager ()
         {
             GLib.Object (
@@ -157,23 +127,6 @@ namespace Ft
                 session_manager: Ft.SessionManager.get_default (),
                 backend: backend
             );
-        }
-
-        construct
-        {
-            this.settings = Ft.get_settings ();
-            this.idle_monitor = new Ft.IdleMonitor ();
-            this.lock_screen = new Ft.LockScreen ();
-            this.debug = true;  // Ft.is_test ();
-
-            this.settings_changed_id = this.settings.changed.connect (this.on_settings_changed);
-
-            this.schedule_announcements ();
-            this.update (true);
-
-            if (this.notification == null) {
-                this._backend.withdraw_notification ("timer");
-            }
         }
 
         private string format_remaining_time (Ft.TimeBlock time_block)
@@ -266,7 +219,7 @@ namespace Ft
             this.emit_request_screen_overlay_open ();
         }
 
-        private bool add_lock_screen_idle_watch ()
+        private void add_lock_screen_idle_watch ()
         {
             var lock_delay = Ft.Timestamp.from_milliseconds_uint (
                     this.settings.get_uint ("screen-overlay-lock-delay") * 1000);
@@ -275,33 +228,27 @@ namespace Ft
                 this.lock_screen_idle_id = this.idle_monitor.add_idle_watch (lock_delay,
                                                                              this.on_lock_screen_idle,
                                                                              GLib.get_monotonic_time ());
-                return this.lock_screen_idle_id != 0;
             }
-
-            return false;
         }
 
-        private bool remove_lock_screen_idle_watch ()
+        private void remove_lock_screen_idle_watch ()
         {
             if (this.lock_screen_idle_id != 0) {
                 this.idle_monitor.remove_watch (this.lock_screen_idle_id);
                 this.lock_screen_idle_id = 0;
-                return true;
             }
-
-            return false;
         }
 
-        private bool add_reopen_screen_overlay_idle_watch ()
+        private void add_reopen_screen_overlay_idle_watch ()
         {
             if (this.reopen_screen_overlay_idle_id != 0) {
-                return false;
+                return;
             }
 
             if (!this.idle_monitor.enabled ||
                 !this.can_open_screen_overlay_later ())
             {
-                return false;
+                return;
             }
 
             var reopen_delay = Ft.Timestamp.from_milliseconds_uint (
@@ -311,20 +258,14 @@ namespace Ft
                     reopen_delay,
                     this.on_reopen_screen_overlay_idle,
                     GLib.get_monotonic_time ());
-
-            return true;
         }
 
-        private bool remove_reopen_screen_overlay_idle_watch ()
+        private void remove_reopen_screen_overlay_idle_watch ()
         {
-            if (this.reopen_screen_overlay_idle_id == 0) {
-                return false;  // already removed
+            if (this.reopen_screen_overlay_idle_id != 0) {
+                this.idle_monitor.remove_watch (this.reopen_screen_overlay_idle_id);
+                this.reopen_screen_overlay_idle_id = 0;
             }
-
-            this.idle_monitor.remove_watch (this.reopen_screen_overlay_idle_id);
-            this.reopen_screen_overlay_idle_id = 0;
-
-            return true;
         }
 
         private void reset_reopen_screen_overlay_idle_watch ()
@@ -647,19 +588,14 @@ namespace Ft
             }
 
             // if (this.capability_manager.is_enabled ("indicator")) {
-            //     return TIME_BLOCK_ABOUT_TO_END_MIN_DURATION;
+            //     return TIME_BLOCK_ABOUT_TO_END_SHORTER_TIMEOUT;
             // }
 
-            // var notifications_capability = this.capability_manager.lookup ("notifications");
-            //
-            // if (notifications_capability != null &&
-            //     notifications_capability.is_enabled () &&
-            //     notifications_capability.has_detail ("actions"))
-            // {
-            //     return TIME_BLOCK_ABOUT_TO_END_MIN_DURATION;
-            // }
+            if (this._backend != null && this._backend.has_actions) {
+                return TIME_BLOCK_ABOUT_TO_END_SHORTER_TIMEOUT;
+            }
 
-            return TIME_BLOCK_ABOUT_TO_END_MAX_DURATION;
+            return TIME_BLOCK_ABOUT_TO_END_LONGER_TIMEOUT;
         }
 
         private void on_timer_state_changed (Ft.TimerState current_state,

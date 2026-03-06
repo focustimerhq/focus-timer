@@ -2,6 +2,11 @@ namespace Tests
 {
     private class MockNotificationBackend : GLib.Object, Ft.NotificationBackend
     {
+        public string name { get; default = ""; }
+        public string vendor { get; default = ""; }
+        public string version { get; default = ""; }
+        public bool has_actions { get; default = true; }
+
         public string[] log;
 
         construct
@@ -14,7 +19,7 @@ namespace Tests
             this.log += @"withdraw:$(id)";
         }
 
-        public void send_notification (string?           id,
+        public void send_notification (string            id,
                                        GLib.Notification notification)
         {
             var hash = notification.get_data<string> ("hash");

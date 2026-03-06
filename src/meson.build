@@ -13,7 +13,7 @@ resources = gnome.compile_resources(
 libfocus_timer_sources = files(
   'integrations/freedesktop/interfaces.vala',
   'integrations/freedesktop/lock-screen-provider.vala',
-  'integrations/freedesktop/notifications-provider.vala',
+  'integrations/freedesktop/notification-backend-provider.vala',
   'integrations/freedesktop/screen-saver-provider.vala',
   'integrations/freedesktop/sleep-monitor-provider.vala',
   'integrations/freedesktop/timezone-monitor-provider.vala',
@@ -49,6 +49,7 @@ libfocus_timer_sources = files(
   'core/lock-screen.vala',
   'core/logger.vala',
   'core/matrix.vala',
+  'core/notification-backend.vala',
   'core/notification-manager.vala',
   'core/priority.vala',
   'core/provided-object.vala',
