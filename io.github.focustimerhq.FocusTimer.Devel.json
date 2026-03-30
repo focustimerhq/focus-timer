@@ -23,6 +23,7 @@
     "--talk-name=org.gnome.ScreenSaver",
     "--talk-name=org.gnome.Shell",
     "--talk-name=org.gtk.vfs.*",
+    "--talk-name=io.github.focustimerhq.FocusTimer.ShellIntegration",
     "--filesystem=~/.local/share/gnome-pomodoro/:ro",
     "--filesystem=xdg-run/gvfsd",
     "--env=G_MESSAGES_DEBUG=focus-timer",

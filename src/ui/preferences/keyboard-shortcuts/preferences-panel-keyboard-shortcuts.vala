@@ -10,6 +10,8 @@ namespace Ft
     public class PreferencesPanelKeyboardShortcuts : Ft.PreferencesPanel
     {
         [GtkChild]
+        private unowned Adw.PreferencesPage page;
+        [GtkChild]
         private unowned Ft.AcceleratorRow start_stop_timer_row;
         [GtkChild]
         private unowned Ft.AcceleratorRow start_pause_resume_timer_row;
@@ -118,6 +120,11 @@ namespace Ft
         private void on_edit_button_clicked (Gtk.Button button)
         {
             this.open_global_shortcuts_dialog ();
+        }
+
+        public override unowned Adw.PreferencesPage get_preferences_page ()
+        {
+            return this.page;
         }
 
         public override void dispose ()

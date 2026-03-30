@@ -20,7 +20,7 @@
           </object>
         </child>
         <property name="content">
-          <object class="AdwPreferencesPage">
+          <object class="AdwPreferencesPage" id="page">
             <property name="description" translatable="yes"><![CDATA[Run shell commands automatically on timer events or conditions. <a href="">Learn more.</a>]]></property>
             <child>
               <object class="AdwPreferencesGroup">

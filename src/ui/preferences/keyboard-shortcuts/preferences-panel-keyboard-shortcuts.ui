@@ -11,7 +11,7 @@
           </object>
         </child>
         <property name="content">
-          <object class="AdwPreferencesPage">
+          <object class="AdwPreferencesPage" id="page">
             <child>
               <object class="AdwPreferencesGroup">
                 <property name="description" translatable="yes">Global shortcuts let you control the app even when it’s not on screen. They work as long as the app is running in the background.</property>

@@ -119,6 +119,7 @@ namespace Gnome
         public bool                 enabled;
         public string               path;
         public string               error;
+        public string               settings_schema;
         public bool                 has_prefs;
         public bool                 has_update;
 
@@ -130,6 +131,7 @@ namespace Gnome
             this.enabled = false;
             this.path = "";
             this.error = "";
+            this.settings_schema = "";
         }
 
         public ExtensionInfo.deserialize (string                               uuid,
@@ -153,6 +155,9 @@ namespace Gnome
             this.error = data.contains ("error")
                     ? data.lookup ("error").get_string ()
                     : "";
+            this.settings_schema = data.contains ("settings-schema")
+                    ? data.lookup ("settings-schema").get_string ()
+                    : "";
             this.has_prefs = data.contains ("hasPrefs")
                     ? data.lookup ("hasPrefs").get_boolean ()
                     : false;
@@ -170,6 +175,7 @@ namespace Gnome
             representation.append (@"    enabled = $enabled,\n");
             representation.append (@"    path = $path,\n");
             representation.append (@"    error = $error,\n");
+            representation.append (@"    settings_schema = $settings_schema,\n");
             representation.append (@"    has_prefs = $has_prefs,\n");
             representation.append (@"    has_update = $has_update\n");
             representation.append (")");
@@ -207,5 +213,17 @@ namespace Gnome
         public signal void extension_state_changed
                                         (string                               uuid,
                                          GLib.HashTable<string, GLib.Variant> state);
+    }
+
+
+    [DBus (name = "io.github.focustimerhq.FocusTimer.ShellIntegration")]
+    public interface ShellIntegration : GLib.Object
+    {
+        public abstract string version { owned get; }
+        public abstract string indicator_type { owned get; set; }
+        public abstract bool enable_blur_effect { get; set; }
+        public abstract bool enable_dismiss_gesture { get; set; }
+
+        public abstract async void open_screen_overlay () throws GLib.DBusError, GLib.IOError;
     }
 }

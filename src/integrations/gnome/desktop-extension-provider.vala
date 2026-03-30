@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 focus-timer contributors
+ * Copyright (c) 2025-2026 focus-timer contributors
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -16,26 +16,49 @@ namespace Gnome
             }
         }
 
-        private Gnome.ShellExtensions? shell_extensions_proxy = null;
-        private Gnome.ExtensionInfo    extension_info;
-        private uint                   watcher_id = 0;
-        private bool                   _extension_enabled = false;
+        public Gnome.DesktopExtensionSettings? settings {
+            get {
+                return this._settings;
+            }
+        }
+
+        private Gnome.ShellExtensions?          shell_extensions_proxy = null;
+        private Gnome.ShellIntegration?         shell_integration_proxy = null;
+        private Gnome.ExtensionInfo             extension_info;
+        private uint                            shell_watcher_id = 0;
+        private uint                            shell_integration_watcher_id = 0;
+        private Gnome.DesktopExtensionSettings? _settings = null;
+        private bool                            _extension_enabled = false;
+        private GLib.Cancellable?               cancellable;
 
         construct
         {
-            this.extension_info = Gnome.ExtensionInfo (EXTENSION_UUID);
+            this.notify["extension-enabled"].connect (
+                (object, pspec) => {
+                    var notification_manager = new Ft.NotificationManager ();
+
+                    if (this._extension_enabled) {
+                        notification_manager.inhibit ();
+                    }
+                    else {
+                        notification_manager.uninhibit ();
+                    }
+                });
         }
 
         private void update_extension_enabled ()
         {
             var enabled = this.extension_info.enabled;
 
-            // TODO: confirm that DBus service of the extension is connected.
-
             if (this._extension_enabled != enabled) {
                 this._extension_enabled = enabled;
                 this.notify_property ("extension-enabled");
             }
+        }
+
+        internal unowned Gnome.ShellIntegration? get_shell_integration_proxy ()
+        {
+            return this.shell_integration_proxy;
         }
 
         private void on_properties_changed (GLib.Variant changed_properties,
@@ -49,18 +72,21 @@ namespace Gnome
          * Respect `user_extensions_enabled` property. If extensions aren't enabled in GNOME,
          * do not mark provider as available.
          */
-        private void on_name_appeared (GLib.DBusConnection connection,
-                                       string              name,
-                                       string              name_owner)
+        private void on_shell_name_appeared (GLib.DBusConnection connection,
+                                             string              name,
+                                             string              name_owner)
         {
+            if (shell_extensions_proxy != null) {
+                return;
+            }
+
             try {
-                // TODO: use async
-                this.shell_extensions_proxy = GLib.Bus.get_proxy_sync<Gnome.ShellExtensions>
-                                        (GLib.BusType.SESSION,
-                                         "org.gnome.Shell",
-                                         "/org/gnome/Shell",
-                                         GLib.DBusProxyFlags.DO_NOT_AUTO_START,
-                                         null);  // TODO: handle cancellable
+                this.shell_extensions_proxy = GLib.Bus.get_proxy_sync<Gnome.ShellExtensions> (
+                        GLib.BusType.SESSION,
+                        "org.gnome.Shell",
+                        "/org/gnome/Shell",
+                        GLib.DBusProxyFlags.DO_NOT_AUTO_START,
+                        this.cancellable);
 
                 var shell_extensions_proxy = (GLib.DBusProxy) this.shell_extensions_proxy;
                 shell_extensions_proxy.g_properties_changed.connect (this.on_properties_changed);
@@ -72,14 +98,53 @@ namespace Gnome
             }
         }
 
-        private void on_name_vanished (GLib.DBusConnection? connection,
-                                       string               name)
+        private void on_shell_name_vanished (GLib.DBusConnection? connection,
+                                             string               name)
         {
+            if (this.shell_extensions_proxy == null) {
+                return;
+            }
+
             var shell_extensions_proxy = (GLib.DBusProxy) this.shell_extensions_proxy;
             shell_extensions_proxy.g_properties_changed.disconnect (this.on_properties_changed);
 
             this.shell_extensions_proxy = null;
             this.available = false;
+        }
+
+        private void on_shell_integration_name_appeared (GLib.DBusConnection connection,
+                                                         string              name,
+                                                         string              name_owner)
+        {
+            if (this.shell_integration_proxy != null) {
+                return;
+            }
+
+            try {
+                this.shell_integration_proxy = GLib.Bus.get_proxy_sync<Gnome.ShellIntegration> (
+                        GLib.BusType.SESSION,
+                        "io.github.focustimerhq.FocusTimer.ShellIntegration",
+                        "/io/github/focustimerhq/FocusTimer/ShellIntegration",
+                        GLib.DBusProxyFlags.DO_NOT_AUTO_START,
+                        this.cancellable);
+
+                this._settings = new Gnome.DesktopExtensionSettings (this.shell_integration_proxy);
+                this.notify_property ("settings");
+            }
+            catch (GLib.Error error) {
+                GLib.warning ("Error while initializing Shell integration proxy: %s", error.message);
+            }
+        }
+
+        private void on_shell_integration_name_vanished (GLib.DBusConnection? connection,
+                                                         string               name)
+        {
+            if (this._settings != null) {
+                this._settings = null;
+                this.notify_property ("settings");
+            }
+
+            this.shell_integration_proxy = null;
         }
 
         private void on_extension_state_changed (string                               uuid,
@@ -93,18 +158,38 @@ namespace Gnome
 
         public override async void initialize (GLib.Cancellable? cancellable) throws GLib.Error
         {
-            this.watcher_id = GLib.Bus.watch_name (GLib.BusType.SESSION,
-                                                   "org.gnome.Shell",
-                                                   GLib.BusNameWatcherFlags.NONE,
-                                                   this.on_name_appeared,
-                                                   this.on_name_vanished);
+            this.extension_info = Gnome.ExtensionInfo (EXTENSION_UUID);
+            this.cancellable = new GLib.Cancellable ();
+
+            this.shell_watcher_id = GLib.Bus.watch_name (
+                    GLib.BusType.SESSION,
+                    "org.gnome.Shell",
+                    GLib.BusNameWatcherFlags.NONE,
+                    this.on_shell_name_appeared,
+                    this.on_shell_name_vanished);
+            this.shell_integration_watcher_id = GLib.Bus.watch_name (
+                    GLib.BusType.SESSION,
+                    "io.github.focustimerhq.FocusTimer.ShellIntegration",
+                    GLib.BusNameWatcherFlags.NONE,
+                    this.on_shell_integration_name_appeared,
+                    this.on_shell_integration_name_vanished);
         }
 
         public override async void uninitialize () throws GLib.Error
         {
-            if (this.watcher_id != 0) {
-                GLib.Bus.unwatch_name (this.watcher_id);
-                this.watcher_id = 0;
+            if (this.shell_watcher_id != 0) {
+                GLib.Bus.unwatch_name (this.shell_watcher_id);
+                this.shell_watcher_id = 0;
+            }
+
+            if (this.shell_integration_watcher_id != 0) {
+                GLib.Bus.unwatch_name (this.shell_integration_watcher_id);
+                this.shell_integration_watcher_id = 0;
+            }
+
+            if (this.cancellable != null) {
+                this.cancellable.cancel ();
+                this.cancellable = null;
             }
         }
 
@@ -136,7 +221,7 @@ namespace Gnome
 
 
         /*
-         * ExtensionProvider
+         * DesktopExtensionProvider
          */
 
         private inline void log_error (string     message,

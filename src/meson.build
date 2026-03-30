@@ -18,8 +18,11 @@ libfocus_timer_sources = files(
   'integrations/freedesktop/sleep-monitor-provider.vala',
   'integrations/freedesktop/timezone-monitor-provider.vala',
   'integrations/gnome/desktop-extension-provider.vala',
+  'integrations/gnome/desktop-extension-settings.vala',
   'integrations/gnome/idle-monitor-provider.vala',
   'integrations/gnome/interfaces.vala',
+  'integrations/gnome/preferences.vala',
+  'integrations/gnome/screen-overlay-provider.vala',
   'integrations/gnome/screen-saver-provider.vala',
   'integrations/portal/background-provider.vala',
   'integrations/portal/global-shortcuts-provider.vala',
@@ -43,6 +46,7 @@ libfocus_timer_sources = files(
   'core/gap.vala',
   'core/gap-entry.vala',
   'core/idle-monitor.vala',
+  'core/interfaces.vala',
   'core/job-queue.vala',
   'core/keyboard-manager.vala',
   'core/locale.vala',
@@ -94,6 +98,7 @@ libfocus_timer = static_library(
     gstreamer_dep,
     posix_dep,
     json_dep,
+    libadwaita_dep,  # TODO: remove it
   ],
   include_directories: config_h_dir,
 )

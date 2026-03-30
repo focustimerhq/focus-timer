@@ -79,8 +79,9 @@ namespace Ft
     }
 
 
-    public class PreferencesPanel : Adw.NavigationPage
+    public abstract class PreferencesPanel : Adw.NavigationPage
     {
+        public abstract unowned Adw.PreferencesPage get_preferences_page ();
     }
 
 
@@ -94,6 +95,7 @@ namespace Ft
             }
             construct {
                 this._model = create_model ();
+                this._model.selection_changed.connect (this.on_selection_changed);
             }
         }
 
@@ -106,19 +108,22 @@ namespace Ft
 
         private Gtk.SingleSelection? _model = null;
         private GLib.Settings?       settings = null;
+        // private Peas.ExtensionSet?   extension_set = null;
+        private Gnome.PreferencesWindowExtension?   gnome_extension = null;
 
         construct
         {
             this.settings = Ft.get_settings ();
-
-            this.load_window_state ();
-
-            this._model.selection_changed.connect (this.on_selection_changed);
-
-            this.sidebar.model = model;
-
+            this.sidebar.model = this._model;
             this.split_view.notify["collapsed"].connect (this.on_split_view_collapsed_notify);
 
+            this.gnome_extension = new Gnome.PreferencesWindowExtension ();
+            // this.extension_set = new Peas.ExtensionSet.with_propertis (
+            //         Ft.Application.get_default ().peas_engine,
+            //         typeof (Ft.PreferencesWindowExtension),
+            //         null, null);
+
+            this.load_window_state ();
             this.update_split_view_content ();
         }
 
@@ -164,11 +169,18 @@ namespace Ft
 
             if (panel_info != null)
             {
-                var content = (Ft.PreferencesPanel) GLib.Object.@new (panel_info.content_class);
-                content.title = panel_info.title;
+                var panel = (Ft.PreferencesPanel) GLib.Object.@new (
+                        panel_info.content_class,
+                        tag: panel_info.name,
+                        title: panel_info.title,
+                        can_pop: false);
 
-                this.split_view.content = content;
+                this.split_view.content = panel;
                 this.split_view.show_content = true;
+
+                this.gnome_extension.current_navigation_page = panel;
+                this.gnome_extension.current_page = panel.get_preferences_page ();
+                this.gnome_extension.handle_panel_changed ();
             }
             else {
                 this.split_view.show_content = false;

@@ -614,6 +614,9 @@ namespace Ft
 
         private void setup_providers ()
         {
+            // TODO: providers should be registered staticly
+            this.screen_overlay_manager.add_provider (
+                    new Gnome.ScreenOverlayProvider (), Ft.Priority.HIGH);
             this.screen_overlay_manager.add_provider (
                     new Ft.DefaultScreenOverlayProvider (), Ft.Priority.DEFAULT);
         }

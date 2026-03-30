@@ -27,6 +27,8 @@ namespace Ft
         };
 
         [GtkChild]
+        private unowned Adw.PreferencesPage page;
+        [GtkChild]
         private unowned Gtk.Switch enable_switch;
         [GtkChild]
         private unowned Gtk.Stack stack;
@@ -178,6 +180,11 @@ namespace Ft
                 default:
                     break;
             }
+        }
+
+        public override unowned Adw.PreferencesPage get_preferences_page ()
+        {
+            return this.page;
         }
 
         public override void dispose ()

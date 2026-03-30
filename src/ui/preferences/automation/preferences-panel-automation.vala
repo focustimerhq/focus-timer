@@ -10,6 +10,8 @@ namespace Ft
     public class PreferencesPanelAutomation : Ft.PreferencesPanel
     {
         [GtkChild]
+        private unowned Adw.PreferencesPage page;
+        [GtkChild]
         private unowned Adw.PreferencesRow add_row;
 
         private Ft.ActionManager?                                    action_manager = null;
@@ -139,6 +141,11 @@ namespace Ft
             this.action_manager.model.move_action (row.action.uuid, destination_row.sort_order);
 
             this.update ();
+        }
+
+        public override unowned Adw.PreferencesPage get_preferences_page ()
+        {
+            return this.page;
         }
 
         public override void dispose ()

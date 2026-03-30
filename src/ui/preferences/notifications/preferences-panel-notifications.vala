@@ -12,6 +12,8 @@ namespace Ft
         private const uint[] IDLE_DELAY_CHOICES = { 15U, 30U, 60U, 120U, 180U, 300U, 0U };
 
         [GtkChild]
+        private unowned Adw.PreferencesPage page;
+        [GtkChild]
         private unowned Adw.SwitchRow announce_about_to_end_switchrow;
         [GtkChild]
         private unowned Adw.SwitchRow screen_overlay_switchrow;
@@ -120,6 +122,11 @@ namespace Ft
         private void on_settings_changed (GLib.Settings settings,
                                           string        key)
         {
+        }
+
+        public override unowned Adw.PreferencesPage get_preferences_page ()
+        {
+            return this.page;
         }
 
         public override void dispose ()

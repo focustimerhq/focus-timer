@@ -13,6 +13,8 @@ namespace Ft
         private const uint MAX_TOAST_TIMEOUT = 30;
 
         [GtkChild]
+        private unowned Adw.PreferencesPage page;
+        [GtkChild]
         private unowned Gtk.Adjustment pomodoro_duration_adjustment;
         [GtkChild]
         private unowned Gtk.Adjustment short_break_duration_adjustment;
@@ -220,6 +222,11 @@ namespace Ft
                     this.hide_apply_changes_toast ();
                 }
             }
+        }
+
+        public override unowned Adw.PreferencesPage get_preferences_page ()
+        {
+            return this.page;
         }
 
         public override void dispose ()

@@ -30,7 +30,7 @@
               <object class="GtkStackPage">
                 <property name="name">enabled</property>
                 <property name="child">
-                  <object class="AdwPreferencesPage">
+                  <object class="AdwPreferencesPage" id="page">
                     <child>
                       <object class="AdwPreferencesGroup">
                         <property name="title" translatable="yes">Alert Sounds</property>
