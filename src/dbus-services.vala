@@ -12,15 +12,105 @@ namespace Ft
     [DBus (name = "io.github.focustimerhq.FocusTimer")]
     public class ApplicationDBusService : GLib.Object
     {
+        private const string DBUS_INTERFACE_NAME = "io.github.focustimerhq.FocusTimer";
+
         public string version {
-            get { return Config.PACKAGE_VERSION; }
+            owned get { return Config.PACKAGE_VERSION; }
         }
 
-        private Ft.Application? application;
+        [DBus (signature = "a{sv}")]
+        public GLib.Variant settings {
+            owned get { return this.serialized_settings; }
+        }
 
-        public ApplicationDBusService (Ft.Application application)
+        private weak GLib.DBusConnection?   connection;
+        private string                      object_path;
+        private Ft.Application?             application;
+        private GLib.Settings?              _settings;
+        private GLib.Variant?               serialized_settings = null;
+
+        public ApplicationDBusService (GLib.DBusConnection connection,
+                                       string              object_path,
+                                       Ft.Application      application,
+                                       GLib.Settings       settings)
         {
+            this.connection = connection;
+            this.object_path = object_path;
             this.application = application;
+            this._settings = settings;
+            this.serialized_settings = this.serialize_settings (settings);
+
+            settings.changed.connect (this.on_settings_changed);
+        }
+
+        private GLib.Variant serialize_settings (GLib.Settings settings)
+        {
+            var builder = new GLib.VariantBuilder (GLib.VariantType.VARDICT);
+            builder.add (
+                    "{sv}",
+                    "announce-about-to-end",
+                    new GLib.Variant.boolean (this._settings.get_boolean ("announce-about-to-end")));
+            builder.add (
+                    "{sv}",
+                    "screen-overlay",
+                    new GLib.Variant.boolean (this._settings.get_boolean ("screen-overlay")));
+            builder.add (
+                    "{sv}",
+                    "screen-overlay-lock-delay",
+                    new GLib.Variant.uint32 (this._settings.get_uint ("screen-overlay-lock-delay")));
+            builder.add (
+                    "{sv}",
+                    "screen-overlay-reopen-delay",
+                    new GLib.Variant.uint32 (this._settings.get_uint ("screen-overlay-reopen-delay")));
+
+            return builder.end ();
+        }
+
+        private void update_properties ()
+        {
+            if (this.connection == null) {
+                return;
+            }
+
+            var changed_properties = new GLib.VariantBuilder (GLib.VariantType.VARDICT);
+            var invalidated_properties = new GLib.VariantBuilder (new GLib.VariantType ("as"));
+            var serialized_settings = this.serialize_settings (this._settings);
+            var changed = false;
+
+            if (this.serialized_settings == null ||
+                !this.serialized_settings.equal (serialized_settings))
+            {
+                this.serialized_settings = serialized_settings;
+                changed_properties.add ("{sv}", "Settings", serialized_settings);
+                changed = true;
+            }
+
+            if (changed)
+            {
+                try {
+                    this.connection.emit_signal (
+                        null,
+                        this.object_path,
+                        "org.freedesktop.DBus.Properties",
+                        "PropertiesChanged",
+                        new GLib.Variant (
+                            "(sa{sv}as)",
+                            DBUS_INTERFACE_NAME,
+                            changed_properties,
+                            invalidated_properties
+                        )
+                    );
+                }
+                catch (GLib.Error error) {
+                    GLib.warning ("Failed to emit PropertiesChanged signal: %s", error.message);
+                }
+            }
+        }
+
+        private void on_settings_changed (GLib.Settings settings,
+                                          string        key)
+        {
+            this.update_properties ();
         }
 
         public void show_window (string view) throws GLib.DBusError, GLib.IOError
@@ -48,7 +138,14 @@ namespace Ft
 
         public override void dispose ()
         {
+            if (this._settings != null) {
+                this._settings.changed.disconnect (this.on_settings_changed);
+                this._settings = null;
+            }
+
+            this.serialized_settings = null;
             this.application = null;
+            this.connection = null;
 
             base.dispose ();
         }
@@ -143,7 +240,8 @@ namespace Ft
             this.timer.state_changed.connect (this.on_timer_state_changed);
             this.timer.tick.connect (this.on_timer_tick);
             this.timer.finished.connect (this.on_timer_finished);
-            this.session_manager.notify["state"].connect (this.on_session_manager_notify_state);
+            this.session_manager.notify["current-state"].connect (this.on_session_manager_notify_current_state);
+
         }
 
         private void update_properties ()
@@ -157,69 +255,80 @@ namespace Ft
             var timer_state = this.timer.state.copy ();
             var last_state_changed_time = this.timer.get_last_state_changed_time ();
             var state = this.session_manager.current_state;
+            var changed = false;
 
             if (state != this._state) {
                 changed_properties.add ("{sv}",
                                         "State",
                                         new GLib.Variant.string (state.to_string ()));
+                changed = true;
             }
 
             if (timer_state.duration != this.timer_state.duration) {
                 changed_properties.add ("{sv}",
                                         "Duration",
                                         new GLib.Variant.int64 (timer_state.duration));
+                changed = true;
             }
 
             if (timer_state.offset != this.timer_state.offset) {
                 changed_properties.add ("{sv}",
                                         "Offset",
                                         new GLib.Variant.int64 (timer_state.offset));
+                changed = true;
             }
 
             if (timer_state.started_time != this.timer_state.started_time) {
                 changed_properties.add ("{sv}",
                                         "StartedTime",
                                         new GLib.Variant.int64 (timer_state.started_time));
+                changed = true;
             }
 
             if (timer_state.paused_time != this.timer_state.paused_time) {
                 changed_properties.add ("{sv}",
                                         "PausedTime",
                                         new GLib.Variant.int64 (timer_state.paused_time));
+                changed = true;
             }
 
             if (timer_state.finished_time != this.timer_state.finished_time) {
                 changed_properties.add ("{sv}",
                                         "FinishedTime",
                                         new GLib.Variant.int64 (timer_state.finished_time));
+                changed = true;
             }
 
             if (last_state_changed_time != this.last_state_changed_time) {
                 changed_properties.add ("{sv}",
                                         "LastChangedTime",
                                         new GLib.Variant.int64 (last_state_changed_time));
+                changed = true;
             }
 
             this._state = state;
             this.timer_state = timer_state;
             this.last_state_changed_time = last_state_changed_time;
 
-            try {
-                this.connection.emit_signal (
-                    null,
-                    this.object_path,
-                    "org.freedesktop.DBus.Properties",
-                    "PropertiesChanged",
-                    new GLib.Variant (
-                        "(sa{sv}as)",
-                        DBUS_INTERFACE_NAME,
-                        changed_properties,
-                        invalidated_properties
-                    )
-                );
-            }
-            catch (GLib.Error error) {
-                GLib.warning ("Failed to emit PropertiesChanged signal: %s", error.message);
+            if (changed)
+            {
+                try {
+                    this.connection.emit_signal (
+                        null,
+                        this.object_path,
+                        "org.freedesktop.DBus.Properties",
+                        "PropertiesChanged",
+                        new GLib.Variant (
+                            "(sa{sv}as)",
+                            DBUS_INTERFACE_NAME,
+                            changed_properties,
+                            invalidated_properties
+                        )
+                    );
+                }
+                catch (GLib.Error error) {
+                    GLib.warning ("Failed to emit PropertiesChanged signal: %s", error.message);
+                }
             }
         }
 
@@ -240,8 +349,8 @@ namespace Ft
             this.finished ();
         }
 
-        private void on_session_manager_notify_state (GLib.Object    object,
-                                                      GLib.ParamSpec pspec)
+        private void on_session_manager_notify_current_state (GLib.Object    object,
+                                                              GLib.ParamSpec pspec)
         {
             this.update_properties ();
         }
@@ -335,7 +444,8 @@ namespace Ft
             this.timer.state_changed.disconnect (this.on_timer_state_changed);
             this.timer.tick.disconnect (this.on_timer_tick);
             this.timer.finished.disconnect (this.on_timer_finished);
-            this.session_manager.notify["state"].disconnect (this.on_session_manager_notify_state);
+            this.session_manager.notify["current-state"].disconnect (
+                this.on_session_manager_notify_current_state);
 
             this.timer = null;
             this.session_manager = null;
@@ -398,6 +508,7 @@ namespace Ft
         private int64                       _end_time = Ft.Timestamp.UNDEFINED;
         private bool                        _has_uniform_breaks = false;
         private bool                        _can_reset = false;
+        private uint                        changed_idle_id = 0U;
 
         public SessionDBusService (GLib.DBusConnection connection,
                                    string              object_path,
@@ -415,7 +526,6 @@ namespace Ft
             this.session_manager.leave_session.connect (this.on_leave_session);
             this.session_manager.enter_time_block.connect (this.on_enter_time_block);
             this.session_manager.leave_time_block.connect (this.on_leave_time_block);
-            this.session_manager.advanced.connect (this.on_advanced);
             this.session_manager.confirm_advancement.connect (this.on_confirm_advancement);
 
             if (session_manager.current_session != null) {
@@ -580,7 +690,6 @@ namespace Ft
                                                 GLib.ParamSpec pspec)
         {
             this.update_properties ();
-            this.changed ();
         }
 
         private void on_notify_has_uniform_breaks (GLib.Object    object,
@@ -591,7 +700,7 @@ namespace Ft
 
         private void on_enter_session (Ft.Session session)
         {
-            session.changed.connect (this.on_current_session_changed);
+            session.changed.connect_after (this.on_current_session_changed);
         }
 
         private void on_leave_session (Ft.Session session)
@@ -609,16 +718,6 @@ namespace Ft
             this.leave_time_block (this.serialize_time_block (time_block));
         }
 
-        private void on_advanced (Ft.Session?   current_session,
-                                  Ft.TimeBlock? current_time_block,
-                                  Ft.Session?   previous_session,
-                                  Ft.TimeBlock? previous_time_block)
-        {
-            if (current_session == null && previous_session != null) {
-                this.changed ();
-            }
-        }
-
         private void on_confirm_advancement (Ft.TimeBlock current_time_block,
                                              Ft.TimeBlock next_time_block)
         {
@@ -628,8 +727,17 @@ namespace Ft
 
         private void on_current_session_changed (Ft.Session session)
         {
-            this.update_properties ();
-            this.changed ();
+            // XXX: ideally we shouldn't need debouncing here
+            if (this.changed_idle_id == 0)
+            {
+                this.changed_idle_id = GLib.Idle.add (() => {
+                     this.changed_idle_id = 0;
+                     this.update_properties ();
+                     this.changed ();
+
+                     return GLib.Source.REMOVE;
+                });
+            }
         }
 
         public void advance () throws GLib.DBusError, GLib.IOError
@@ -708,8 +816,12 @@ namespace Ft
                     this.on_notify_has_uniform_breaks);
             this.session_manager.enter_session.disconnect (this.on_enter_session);
             this.session_manager.leave_session.disconnect (this.on_leave_session);
-            this.session_manager.advanced.disconnect (this.on_advanced);
             this.session_manager.confirm_advancement.disconnect (this.on_confirm_advancement);
+
+            if (this.changed_idle_id != 0U) {
+                GLib.Source.remove (this.changed_idle_id);
+                this.changed_idle_id = 0U;
+            }
 
             this.session_manager = null;
             this.connection = null;

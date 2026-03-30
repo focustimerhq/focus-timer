@@ -1640,6 +1640,10 @@ namespace Tests
             session_manager.leave_time_block.connect (() => { signals += "leave-time-block"; });
             session_manager.session_rescheduled.connect (() => { signals += "session-rescheduled"; });
 
+            timer.state_changed.connect (() => {
+                assert_true (session_manager.current_state == session_manager.current_time_block.state);
+            });
+
             // Switch to a long break after a minute
             var now = Ft.Timestamp.advance (Ft.Interval.MINUTE);
             var expected_start_time = time_block_2.start_time;

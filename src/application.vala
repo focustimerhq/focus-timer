@@ -983,7 +983,11 @@ namespace Ft
             if (this.dbus_service == null)
             {
                 try {
-                    this.dbus_service = new Ft.ApplicationDBusService (this);
+                    this.dbus_service = new Ft.ApplicationDBusService (
+                            connection,
+                            object_path,
+                            this,
+                            Ft.get_settings ());
                     this.dbus_service_id = connection.register_object (object_path, dbus_service);
                 }
                 catch (GLib.IOError error) {

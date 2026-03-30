@@ -6,7 +6,7 @@
       io.github.focustimerhq.FocusTimer:
       @short_description: Main application interface
 
-      The main interface for controlling the Pomodoro application.
+      The main interface for controlling the application.
   -->
   <interface name="io.github.focustimerhq.FocusTimer">
 
@@ -14,10 +14,17 @@
         Version:
         The application version
 
-        This property contains the version string of the running
-        Pomodoro application.
+        This property contains the version string of the running application.
     -->
     <property type="s" name="Version" access="read"/>
+
+    <!--
+        Settings:
+        Selected application settings
+
+        Application settings that may be relevant for an desktop extension.
+    -->
+    <property type="a{sv}" name="Settings" access="read"/>
 
     <!--
         ShowWindow:

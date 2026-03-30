@@ -125,11 +125,15 @@ namespace Ft
 
         /**
          * Convenience property to track current state.
+         *
+         * The `this._current_state` is used for the property notification only.
          */
         [CCode (notify = false)]
         public Ft.State current_state {
             get {
-                return this._current_state;
+                return this._current_time_block != null
+                    ? this._current_time_block.state
+                    : Ft.State.STOPPED;
             }
             set {
                 this.advance_to_state (value);
