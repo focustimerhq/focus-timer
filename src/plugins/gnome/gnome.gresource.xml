@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/plugins/gnome">
     <file>gnome.plugin</file>
+    <file compressed="true" preprocess="xml-stripblanks">install-extension-dialog.ui</file>
   </gresource>
 </gresources>

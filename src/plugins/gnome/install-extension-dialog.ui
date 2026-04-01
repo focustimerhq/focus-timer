@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <requires lib="libadwaita" version="1.0"/>
-  <template class="FtInstallExtensionDialog" parent="AdwDialog">
+  <template class="GnomeInstallExtensionDialog" parent="AdwDialog">
     <property name="title" translatable="yes">GNOME Shell Extension</property>
     <property name="follows-content-size">true</property>
     <property name="width-request">300</property>

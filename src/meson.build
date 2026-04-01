@@ -13,16 +13,11 @@ resources = gnome.compile_resources(
 subdir('core')
 
 
-# Plugins
-subdir('plugins')
-
-
 # UI library
 libft_ui_sources = files(
   'ui/log/widgets/time-label.vala',
   'ui/log/log-window.vala',
   'ui/main/dialogs/about-dialog.vala',
-  'ui/main/dialogs/install-extension-dialog.vala',
   'ui/main/stats/charts/bar-chart.vala',
   'ui/main/stats/charts/bubble-chart.vala',
   'ui/main/stats/charts/canvas-layout.vala',
@@ -98,11 +93,29 @@ libft_ui = static_library(
   include_directories: config_h_dir,
 )
 
+libft_ui_dep = declare_dependency(
+  link_with: libft_ui,
+  dependencies: [
+    libft_core_dep,
+    gtk_dep,
+    libadwaita_dep,
+    peas_dep,
+  ],
+  include_directories: [
+    include_directories('.'),
+  ],
+)
+
+
+# Plugins
+subdir('plugins')
+
+
 # The focus-timer executable
 executable(
   'focus-timer',
   'main.vala',
-  dependencies: [libft_core_dep, gtk_dep, libadwaita_dep, peas_dep],
+  dependencies: [libft_ui_dep],
   link_whole: [libft_ui] + libft_plugins,
   export_dynamic: true,
   include_directories: config_h_dir,

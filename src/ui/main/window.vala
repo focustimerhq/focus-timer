@@ -139,9 +139,7 @@ namespace Ft
         private Ft.SessionManager?      session_manager = null;
         private Ft.Timer?               timer = null;
         private Ft.BackgroundManager?   background_manager = null;
-        private Ft.DesktopExtension?    extension = null;
-        private Adw.Toast?              install_extension_toast = null;
-        private static bool             install_extension_toast_dismissed = false;
+        private Peas.ExtensionSet?      extensions = null;
         private static uint             background_hold_id = 0U;
 
         construct
@@ -165,8 +163,17 @@ namespace Ft
 
             this.background_manager = new Ft.BackgroundManager ();
 
-            this.extension = new Ft.DesktopExtension ();
-            this.extension.notify["available"].connect (this.on_extension_notify_available);
+            this.extensions = new Peas.ExtensionSet.with_properties (
+                    Peas.Engine.get_default (),
+                    typeof (Ft.WindowExtension), {}, {});
+
+            var n_extensions = this.extensions.get_n_items ();
+            for (var i = 0U; i < n_extensions; i++) {
+                var extension = (Ft.WindowExtension) this.extensions.get_item (i);
+                extension.window = this;
+            }
+
+            this.extensions.extension_added.connect (this.on_window_extension_added);
 
             this.notify["is-active"].connect (this.on_notify_is_active);
             this.notify["maximized"].connect (this.on_notify_maximized);
@@ -191,28 +198,6 @@ namespace Ft
 
             timer_page.needs_attention = this.view_stack.visible_child != timer_page.child &&
                                          timer.is_started ();
-        }
-
-        private void update_install_extension_toast ()
-        {
-            if (!this.get_mapped ()) {
-                return;
-            }
-
-            if (!this.has_css_class ("devel")) {
-                // TODO: Display the toast once the extension is ready.
-                return;
-            }
-
-            if (this.extension.available && !this.extension.is_installed ()) {
-                this.show_install_extension_toast ();
-            }
-            else if (this.install_extension_toast != null) {
-                this.install_extension_toast.dismissed.disconnect (
-                        this.on_install_extension_toast_dismissed);
-                this.install_extension_toast.dismiss ();
-                this.install_extension_toast = null;
-            }
         }
 
         public Ft.WindowView get_default_view ()
@@ -289,32 +274,6 @@ namespace Ft
             }
 
             this.toast_overlay.add_toast (toast);
-        }
-
-        private void show_install_extension_toast ()
-        {
-            if (Ft.Window.install_extension_toast_dismissed ||
-                this.install_extension_toast != null)
-            {
-                return;
-            }
-
-            var toast = new Adw.Toast (_("GNOME Shell extension available"));
-            toast.button_label = _("Learn More");
-            toast.priority = Adw.ToastPriority.HIGH;
-            toast.timeout = 0;
-            toast.button_clicked.connect (
-                () => {
-                    var dialog = new Ft.InstallExtensionDialog ();
-
-                    dialog.present (this);
-                    this.install_extension_toast = null;
-                });
-            toast.dismissed.connect (this.on_install_extension_toast_dismissed);
-
-            this.install_extension_toast = toast;
-
-            this.add_toast (toast);
         }
 
         private void show_close_confirmation_dialog ()
@@ -439,17 +398,11 @@ namespace Ft
             toggle_compact_size_action.set_enabled (can_change_size);
         }
 
-        private void on_extension_notify_available (GLib.Object    object,
-                                                    GLib.ParamSpec pspec)
+        private void on_window_extension_added (Peas.PluginInfo info,
+                                                GLib.Object     extension)
         {
-            this.update_install_extension_toast ();
-        }
-
-        private void on_install_extension_toast_dismissed (Adw.Toast toast)
-        {
-            this.install_extension_toast = null;
-
-            Ft.Window.install_extension_toast_dismissed = true;
+            var window_extension = (Ft.WindowExtension) extension;
+            window_extension.window = this;
         }
 
         private void on_compact_size_activate (GLib.SimpleAction action,
@@ -502,16 +455,25 @@ namespace Ft
         {
             base.map ();
 
-            this.update_install_extension_toast ();
+            if (this.extensions != null)
+            {
+                var n_ext = this.extensions.get_n_items ();
+
+                for (var i = 0U; i < n_ext; i++) {
+                    var extension = (Ft.WindowExtension) this.extensions.get_item (i);
+                    extension.window_mapped ();
+                }
+            }
         }
 
         public override void dispose ()
         {
-            this.extension.notify["available"].disconnect (this.on_extension_notify_available);
+            if (this.extensions != null) {
+                this.extensions.extension_added.disconnect (this.on_window_extension_added);
+                this.extensions = null;
+            }
 
             this.background_manager = null;
-            this.extension = null;
-            this.install_extension_toast = null;
 
             base.dispose ();
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 focus-timer contributors
+ * Copyright (c) 2025-2026 focus-timer contributors
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -7,9 +7,9 @@
 using GLib;
 
 
-namespace Ft
+namespace Gnome
 {
-    [GtkTemplate (ui = "/io/github/focustimerhq/FocusTimer/ui/main/dialogs/install-extension-dialog.ui")]
+    [GtkTemplate (ui = "/plugins/gnome/install-extension-dialog.ui")]
     public class InstallExtensionDialog : Adw.Dialog
     {
         private uint CLOSE_TIMEOUT_SECONDS = 3;
@@ -21,12 +21,12 @@ namespace Ft
         [GtkChild]
         private unowned Gtk.TextView error_text_view;
 
-        private Ft.DesktopExtension? extension = null;
-        private uint                 timeout_id = 0U;
+        private Gnome.ShellExtension? extension = null;
+        private uint                  timeout_id = 0U;
 
         construct
         {
-            this.extension = new Ft.DesktopExtension ();
+            this.extension = new Gnome.ShellExtension ();
         }
 
         private void close_after_timeout (uint seconds)
@@ -44,7 +44,7 @@ namespace Ft
                     return GLib.Source.REMOVE;
                 });
             GLib.Source.set_name_by_id (this.timeout_id,
-                                        "Ft.ExtensionDialog.close_after_timeout");
+                                        "Gnome.InstallExtensionDialog.close_after_timeout");
         }
 
         private void show_spinner ()
@@ -62,10 +62,10 @@ namespace Ft
 
             this.show_spinner ();
 
-            this.extension.install.begin (
+            this.extension.install_extension.begin (
                 (obj, res) => {
                     try {
-                        var success = this.extension.install.end (res);
+                        var success = this.extension.install_extension.end (res);
 
                         this.can_close = true;
 
@@ -74,25 +74,24 @@ namespace Ft
                             this.close_after_timeout (CLOSE_TIMEOUT_SECONDS);
                         }
                         else {
-                            // cancelled
                             this.close ();
                         }
                     }
-                    catch (Ft.DesktopExtensionError error)
+                    catch (Gnome.ShellExtensionError error)
                     {
                         switch (error.code)
                         {
-                            case Ft.DesktopExtensionError.TIMED_OUT:
+                            case Gnome.ShellExtensionError.TIMED_OUT:
                                 this.error_message_label.label = _("Time-out reached");
                                 this.error_message_label.visible = true;
                                 break;
 
-                            case Ft.DesktopExtensionError.NOT_ALLOWED:
+                            case Gnome.ShellExtensionError.NOT_ALLOWED:
                                 this.error_message_label.label = _("Installing extensions is not allowed");
                                 this.error_message_label.visible = true;
                                 break;
 
-                            case Ft.DesktopExtensionError.DOWNLOAD_FAILED:
+                            case Gnome.ShellExtensionError.DOWNLOAD_FAILED:
                                 this.error_message_label.label = _("Failed to download the extension");
                                 this.error_message_label.visible = true;
                                 break;

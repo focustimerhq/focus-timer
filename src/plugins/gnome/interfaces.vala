@@ -145,7 +145,7 @@ namespace Gnome
                     : Gnome.ExtensionType.UNKNOWN;
             this.state = data.contains ("state")
                     ? (Gnome.ExtensionState) data.lookup ("state").get_double ()
-                    : Gnome.ExtensionState.UNKNOWN;
+                    : Gnome.ExtensionState.UNINSTALLED;
             this.enabled = data.contains ("enabled")
                     ? data.lookup ("enabled").get_boolean ()
                     : false;

@@ -128,7 +128,6 @@ namespace Ft
         private Ft.StatsManager?            stats_manager;
         private Ft.EventProducer?           event_producer;
         private Ft.EventBus?                event_bus;
-        private Ft.DesktopExtension?        extension;
         private Ft.JobQueue?                job_queue;
         private Ft.ActionManager?           action_manager;
         private Ft.NotificationManager?     notification_manager;
@@ -137,6 +136,7 @@ namespace Ft
         private Ft.SoundManager?            sound_manager;
         private Ft.Logger?                  logger;
         private GLib.Settings?              settings;
+        private Peas.ExtensionSet?          extensions;
         private uint                        save_idle_id = 0;
         private Ft.ApplicationDBusService?  dbus_service;
         private uint                        dbus_service_id;
@@ -618,11 +618,6 @@ namespace Ft
                     new Ft.DefaultScreenOverlayProvider (), Ft.Priority.DEFAULT);
         }
 
-        private void setup_extension ()
-        {
-            this.extension = new Ft.DesktopExtension ();
-        }
-
         private void setup_plugins ()
         {
             var engine = Peas.Engine.get_default ();
@@ -634,6 +629,9 @@ namespace Ft
                 var plugin_info = (Peas.PluginInfo) engine.get_item (i);
                 engine.load_plugin (plugin_info);
             }
+
+            this.extensions = new Peas.ExtensionSet.with_properties (
+                    engine, typeof (Ft.ApplicationExtension), {}, {});
         }
 
         private void update_color_scheme ()
@@ -687,8 +685,8 @@ namespace Ft
             this.setup_database ();
             this.setup_plugins ();
             this.setup_providers ();
-            this.setup_extension ();
             this.setup_actions ();
+
             this.update_color_scheme ();
 
             this.settings.changed.connect (this.on_settings_changed);
@@ -961,7 +959,7 @@ namespace Ft
 
             this.event_producer = null;
             this.event_bus = null;
-            this.extension = null;
+            this.extensions = null;
             this.job_queue = null;
             this.action_manager = null;
             this.logger = null;

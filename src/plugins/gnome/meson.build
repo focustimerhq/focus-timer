@@ -9,13 +9,16 @@ libft_plugin_gnome = static_library(
   files(
     'interfaces.vala',
     'gnome.vala',
-    'desktop-extension-provider.vala',
+    'application-extension.vala',
     'desktop-extension-settings.vala',
     'idle-monitor-provider.vala',
+    'install-extension-dialog.vala',
     'preferences.vala',
     'screen-overlay-provider.vala',
     'screen-saver-provider.vala',
+    'shell-extension.vala',
+    'window-extension.vala',
   ) + gnome_plugin_resources,
-  dependencies: [libft_core_dep, gio_dep, peas_dep, libadwaita_dep],
+  dependencies: [libft_ui_dep],
   include_directories: config_h_dir,
 )

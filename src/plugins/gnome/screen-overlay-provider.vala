@@ -18,39 +18,17 @@ namespace Gnome
      */
     public class ScreenOverlayProvider : Ft.Provider, Ft.ScreenOverlayProvider
     {
-        private Ft.DesktopExtension?            extension = null;
-        private Gnome.DesktopExtensionProvider? extension_provider = null;
+        private Gnome.ShellExtension? shell_extension = null;
 
         private void update_available ()
         {
-            this.available = this.extension_provider != null &&
-                             this.extension_provider.extension_enabled;
-        }
-
-        private void update_extension_provider ()
-        {
-            var extension_provider = this.extension?.provider as Gnome.DesktopExtensionProvider;
-
-            if (this.extension_provider == extension_provider) {
-                return;
-            }
-
-            if (this.extension_provider != null) {
-                this.extension_provider.notify["extension-enabled"].disconnect (this.on_notify_extension_enabled);
-            }
-
-            this.extension_provider = extension_provider;
-
-            if (this.extension_provider != null) {
-                this.extension_provider.notify["extension-enabled"].connect (this.on_notify_extension_enabled);
-            }
-
-            this.update_available ();
+            this.available = this.shell_extension != null &&
+                             this.shell_extension.enabled;
         }
 
         public void open ()
         {
-            var proxy = this.extension_provider?.get_shell_integration_proxy ();
+            var proxy = this.shell_extension?.get_shell_integration_proxy ();
 
             if (proxy != null) {
                 proxy.open_screen_overlay.begin (
@@ -74,19 +52,19 @@ namespace Gnome
 
         protected override async void initialize (GLib.Cancellable? cancellable) throws GLib.Error
         {
-            this.extension = new Ft.DesktopExtension ();
-            this.extension.notify["provider"].connect (this.on_notify_provider);
+            this.shell_extension = new Gnome.ShellExtension ();
+            this.shell_extension.notify["enabled"].connect (this.on_notify_extension_enabled);
 
-            this.update_extension_provider ();
+            this.update_available ();
         }
 
         protected override async void uninitialize () throws GLib.Error
         {
-            if (this.extension != null) {
-                this.extension.notify["provider"].disconnect (this.on_notify_provider);
-                this.extension = null;
+            if (this.shell_extension != null) {
+                this.shell_extension.notify["enabled"].disconnect (this.on_notify_extension_enabled);
+                this.shell_extension = null;
 
-                this.update_extension_provider ();
+                this.update_available ();
             }
         }
 
@@ -97,12 +75,6 @@ namespace Gnome
         protected override async void disable () throws GLib.Error
         {
             this.close ();
-        }
-
-        private void on_notify_provider (GLib.Object    object,
-                                         GLib.ParamSpec pspec)
-        {
-            this.update_extension_provider ();
         }
 
         private void on_notify_extension_enabled (GLib.Object    object,

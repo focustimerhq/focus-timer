@@ -8,7 +8,6 @@
 
     <!-- UI -->
     <file compressed="true" preprocess="xml-stripblanks">ui/log/log-window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/main/dialogs/install-extension-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/main/stats/charts/bubble-chart.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/main/stats/charts/chart.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/main/stats/stats-day-page.ui</file>

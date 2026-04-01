@@ -8,7 +8,6 @@ libft_core_sources = files(
   'cycle.vala',
   'database.vala',
   'date-utils.vala',
-  'desktop-extension.vala',
   'event-producer.vala',
   'event.vala',
   'event-bus.vala',

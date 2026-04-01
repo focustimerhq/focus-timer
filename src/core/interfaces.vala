@@ -7,10 +7,32 @@
  * This module holds public interfaces for Peas extensions.
  */
 
-// TODO: move this file to ui/interfaces.vala
-
 namespace Ft
 {
+    public abstract class ApplicationExtension : GLib.Object
+    {
+    }
+
+
+    public abstract class WindowExtension : GLib.Object
+    {
+        public GLib.Object? window {
+            get {
+                return this._window;
+            }
+            set {
+                this._window = value;
+            }
+        }
+
+        private unowned GLib.Object? _window = null;
+
+        public virtual void window_mapped ()
+        {
+        }
+    }
+
+
     public abstract class PreferencesWindowExtension : GLib.Object
     {
         public GLib.Object? current_navigation_page {

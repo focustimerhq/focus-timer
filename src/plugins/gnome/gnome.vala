@@ -11,8 +11,11 @@ namespace Gnome
     {
         var object_module = module as Peas.ObjectModule;
 
-        object_module.register_extension_type (typeof (Ft.DesktopExtensionProvider),
-                                               typeof (Gnome.DesktopExtensionProvider));
+        object_module.register_extension_type (typeof (Ft.ApplicationExtension),
+                                               typeof (Gnome.ApplicationExtension));
+
+        object_module.register_extension_type (typeof (Ft.WindowExtension),
+                                               typeof (Gnome.WindowExtension));
 
         object_module.register_extension_type (typeof (Ft.ScreenOverlayProvider),
                                                typeof (Gnome.ScreenOverlayProvider));
