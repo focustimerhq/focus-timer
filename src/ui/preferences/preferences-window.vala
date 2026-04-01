@@ -19,6 +19,9 @@ namespace Ft
     }
 
 
+    private delegate void PreferencesWindowExtensionFunc (Ft.PreferencesWindowExtension extension);
+
+
     private Gtk.SingleSelection create_model ()
     {
         Ft.PreferencesPanelInfo? panel_info;
@@ -108,8 +111,7 @@ namespace Ft
 
         private Gtk.SingleSelection? _model = null;
         private GLib.Settings?       settings = null;
-        // private Peas.ExtensionSet?   extension_set = null;
-        private Gnome.PreferencesWindowExtension?   gnome_extension = null;
+        private Peas.ExtensionSet?   extension_set = null;
 
         construct
         {
@@ -117,11 +119,10 @@ namespace Ft
             this.sidebar.model = this._model;
             this.split_view.notify["collapsed"].connect (this.on_split_view_collapsed_notify);
 
-            this.gnome_extension = new Gnome.PreferencesWindowExtension ();
-            // this.extension_set = new Peas.ExtensionSet.with_propertis (
-            //         Ft.Application.get_default ().peas_engine,
-            //         typeof (Ft.PreferencesWindowExtension),
-            //         null, null);
+            this.extension_set = new Peas.ExtensionSet.with_properties (
+                    Peas.Engine.get_default (),
+                    typeof (Ft.PreferencesWindowExtension),
+                    {}, {});
 
             this.load_window_state ();
             this.update_split_view_content ();
@@ -163,6 +164,22 @@ namespace Ft
                                 maximized);
         }
 
+        private void foreach_extension (Ft.PreferencesWindowExtensionFunc func)
+        {
+            if (this.extension_set == null) {
+                return;
+            }
+
+            var n_extensions = this.extension_set.get_n_items ();
+
+            for (var i = 0U; i < n_extensions; i++)
+            {
+                var extension = (Ft.PreferencesWindowExtension) this.extension_set.get_item (i);
+
+                func (extension);
+            }
+        }
+
         private void update_split_view_content ()
         {
             var panel_info = (Ft.PreferencesPanelInfo?) this._model.selected_item;
@@ -178,9 +195,12 @@ namespace Ft
                 this.split_view.content = panel;
                 this.split_view.show_content = true;
 
-                this.gnome_extension.current_navigation_page = panel;
-                this.gnome_extension.current_page = panel.get_preferences_page ();
-                this.gnome_extension.handle_panel_changed ();
+                this.foreach_extension (
+                    (extension) => {
+                        extension.current_navigation_page = panel;
+                        extension.current_page = panel.get_preferences_page ();
+                        extension.handle_panel_changed ();
+                    });
             }
             else {
                 this.split_view.show_content = false;

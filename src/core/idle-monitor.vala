@@ -192,14 +192,9 @@ namespace Ft
 
         protected override void setup_providers ()
         {
-            // XXX: this should be defined in tests
             if (Ft.is_test ()) {
                 this.providers.add (new Ft.DummyIdleMonitorProvider (), Ft.Priority.HIGH);
-                return;
             }
-
-            // TODO: Providers should register themselves in a static constructors, but can't make it work...
-            this.providers.add (new Gnome.IdleMonitorProvider (), Ft.Priority.HIGH);
         }
 
         protected override void provider_enabled (Ft.IdleMonitorProvider provider)

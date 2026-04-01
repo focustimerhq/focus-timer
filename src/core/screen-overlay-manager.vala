@@ -44,6 +44,8 @@ namespace Ft
             this.providers = new Ft.ProviderSet<Ft.ScreenOverlayProvider> (Ft.SelectionMode.SINGLE);
             this.providers.provider_selected.connect (this.on_provider_selected);
             this.providers.provider_unselected.connect (this.on_provider_unselected);
+
+            this.providers.discover ();
             this.providers.enable ();
         }
 

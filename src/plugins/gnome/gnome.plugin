@@ -1,0 +1,6 @@
+[Plugin]
+Name=GNOME
+Module=gnome
+Builtin=true
+Embedded=gnome_peas_register_types
+X-Priority=high

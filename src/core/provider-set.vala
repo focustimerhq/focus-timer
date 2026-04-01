@@ -98,14 +98,6 @@ namespace Ft
 
     public class ProviderSet<T> : GLib.Object
     {
-        private GLib.GenericSet<Ft.ProviderInfo> providers = null;
-        private Ft.SelectionMode                 _selection_mode = Ft.SelectionMode.ALL;
-        private uint                             update_selection_timeout_id = 0;
-        private uint                             update_selection_idle_id = 0;
-        private bool                             selection_invalid = false;
-        private bool                             updating_selection = false;
-        private bool                             should_enable = false;
-
         public Ft.SelectionMode selection_mode
         {
             get {
@@ -115,6 +107,15 @@ namespace Ft
                 this._selection_mode = value;
             }
         }
+
+        private Ft.SelectionMode                 _selection_mode = Ft.SelectionMode.ALL;
+        private GLib.GenericSet<Ft.ProviderInfo> providers = null;
+        private Peas.ExtensionSet?               extension_set = null;
+        private uint                             update_selection_timeout_id = 0;
+        private uint                             update_selection_idle_id = 0;
+        private bool                             selection_invalid = false;
+        private bool                             updating_selection = false;
+        private bool                             should_enable = false;
 
         construct
         {
@@ -594,6 +595,61 @@ namespace Ft
             this.providers.remove_all ();
         }
 
+        /**
+         * Start watching for Peas extensions.
+         *
+         * Already-loaded plugins are picked up immediately; future plugin
+         * loads / unloads are handled reactively via ExtensionSet signals.
+         */
+        public void discover ()
+        {
+            if (this.extension_set != null) {
+                return;
+            }
+
+            var engine = Peas.Engine.get_default ();
+            var n = engine.get_n_items ();
+
+            this.extension_set = new Peas.ExtensionSet.with_properties (
+                    engine, typeof (T), {}, {});
+            this.extension_set.extension_added.connect (this.on_extension_added);
+            this.extension_set.extension_removed.connect (this.on_extension_removed);
+
+            for (var i = 0U; i < n; i++)
+            {
+                var info = (Peas.PluginInfo) engine.get_item (i);
+                var extension = this.extension_set.get_extension (info);
+
+                if (extension != null && extension is Ft.Provider)
+                {
+                    var priority = Ft.Priority.from_string (
+                            info.get_external_data ("Priority"));
+
+                    this.add ((T) extension, priority);
+                }
+            }
+        }
+
+        private void on_extension_added (Peas.PluginInfo info,
+                                         GLib.Object     extension)
+        {
+            if (extension is Ft.Provider)
+            {
+                var priority = Ft.Priority.from_string (
+                        info.get_external_data ("Priority"));
+
+                this.add ((T) extension, priority);
+            }
+        }
+
+        private void on_extension_removed (Peas.PluginInfo info,
+                                           GLib.Object     extension)
+        {
+            if (extension is Ft.Provider) {
+                this.remove ((T) extension);
+            }
+        }
+
         public void enable ()
         {
             this.should_enable = true;
@@ -664,6 +720,12 @@ namespace Ft
             if (this.update_selection_idle_id != 0) {
                 GLib.Source.remove (this.update_selection_idle_id);
                 this.update_selection_idle_id = 0;
+            }
+
+            if (this.extension_set != null) {
+                this.extension_set.extension_added.disconnect (this.on_extension_added);
+                this.extension_set.extension_removed.disconnect (this.on_extension_removed);
+                this.extension_set = null;
             }
 
             if (this.providers != null)

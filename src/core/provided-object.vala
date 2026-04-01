@@ -71,7 +71,7 @@ namespace Ft
 
         construct
         {
-            this.providers              = new Ft.ProviderSet<Ft.Provider> (Ft.SelectionMode.SINGLE);
+            this.providers              = new Ft.ProviderSet<T> (Ft.SelectionMode.SINGLE);
             this.provider_selected_id   = this.providers.provider_selected.connect (this.on_provider_selected);
             this.provider_unselected_id = this.providers.provider_unselected.connect (this.on_provider_unselected);
             this.provider_enabled_id    = this.providers.provider_enabled.connect (this.on_provider_enabled);
@@ -80,6 +80,7 @@ namespace Ft
             this.initialize ();
             this.setup_providers ();
 
+            this.providers.discover ();
             this.providers.enable ();
         }
 

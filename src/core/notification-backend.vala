@@ -151,8 +151,6 @@ namespace Ft
 
         protected override void setup_providers ()
         {
-            // TODO: use Peas to register provider
-            this.providers.add (new Freedesktop.NotificationBackendProvider (), Ft.Priority.HIGH);
             this.providers.add (new Ft.DefaultNotificationBackendProvider (), Ft.Priority.DEFAULT);
         }
 

@@ -29,5 +29,23 @@ namespace Ft
                     assert_not_reached ();
             }
         }
+
+        public static Ft.Priority from_string (string? priority)
+        {
+            switch (priority)
+            {
+                case "low":
+                    return LOW;
+
+                case "default":
+                    return DEFAULT;
+
+                case "high":
+                    return HIGH;
+
+                default:
+                    return DEFAULT;
+            }
+        }
     }
 }

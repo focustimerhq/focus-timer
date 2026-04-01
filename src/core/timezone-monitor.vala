@@ -68,8 +68,6 @@ namespace Ft
 
         protected override void setup_providers ()
         {
-            // TODO: Providers should register themselves in a static constructors, but can't make it work...
-            this.providers.add (new Freedesktop.TimeZoneMonitorProvider ());
         }
 
         protected override void provider_enabled (Ft.TimeZoneMonitorProvider provider)

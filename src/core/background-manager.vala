@@ -105,9 +105,6 @@ namespace Ft
 
         protected override void setup_providers ()
         {
-            // TODO: Providers should register themselves in a static constructors, but can't make it work...
-            this.providers.add (new Portal.BackgroundProvider ());
-
             // TODO: add a permissive provider if the Background portal is not available
         }
 

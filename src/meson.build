@@ -9,119 +9,16 @@ resources = gnome.compile_resources(
 )
 
 
-# Common library
-libfocus_timer_sources = files(
-  'integrations/freedesktop/interfaces.vala',
-  'integrations/freedesktop/lock-screen-provider.vala',
-  'integrations/freedesktop/notification-backend-provider.vala',
-  'integrations/freedesktop/screen-saver-provider.vala',
-  'integrations/freedesktop/sleep-monitor-provider.vala',
-  'integrations/freedesktop/timezone-monitor-provider.vala',
-  'integrations/gnome/desktop-extension-provider.vala',
-  'integrations/gnome/desktop-extension-settings.vala',
-  'integrations/gnome/idle-monitor-provider.vala',
-  'integrations/gnome/interfaces.vala',
-  'integrations/gnome/preferences.vala',
-  'integrations/gnome/screen-overlay-provider.vala',
-  'integrations/gnome/screen-saver-provider.vala',
-  'integrations/portal/background-provider.vala',
-  'integrations/portal/global-shortcuts-provider.vala',
-  'integrations/portal/interfaces.vala',
-  'integrations/portal/request.vala',
-  'core/action.vala',
-  'core/action-list-model.vala',
-  'core/action-manager.vala',
-  'core/background-manager.vala',
-  'core/command.vala',
-  'core/context.vala',
-  'core/cycle.vala',
-  'core/database.vala',
-  'core/date-utils.vala',
-  'core/desktop-extension.vala',
-  'core/event-producer.vala',
-  'core/event.vala',
-  'core/event-bus.vala',
-  'core/expression.vala',
-  'core/expression-parser.vala',
-  'core/gap.vala',
-  'core/gap-entry.vala',
-  'core/idle-monitor.vala',
-  'core/interfaces.vala',
-  'core/job-queue.vala',
-  'core/keyboard-manager.vala',
-  'core/locale.vala',
-  'core/lock-screen.vala',
-  'core/logger.vala',
-  'core/matrix.vala',
-  'core/notification-backend.vala',
-  'core/notification-manager.vala',
-  'core/priority.vala',
-  'core/provided-object.vala',
-  'core/provider.vala',
-  'core/provider-set.vala',
-  'core/scheduler.vala',
-  'core/screen-overlay-manager.vala',
-  'core/screen-saver.vala',
-  'core/session.vala',
-  'core/session-entry.vala',
-  'core/session-manager.vala',
-  'core/session-manager-action-group.vala',
-  'core/settings.vala',
-  'core/sleep-monitor.vala',
-  'core/sound-manager.vala',
-  'core/sound.vala',
-  'core/state.vala',
-  'core/stats-entry.vala',
-  'core/stats-manager.vala',
-  'core/time-block.vala',
-  'core/time-block-entry.vala',
-  'core/timer.vala',
-  'core/timer-action-group.vala',
-  'core/timestamp.vala',
-  'core/timezone-entry.vala',
-  'core/timezone-history.vala',
-  'core/timezone-monitor.vala',
-  'core/utils.vala',
-  'core/variables.vala',
-)
-
-libfocus_timer = static_library(
-  'focus-timer',
-  libfocus_timer_sources,
-  dependencies: [
-    gio_dep,
-    gobject_dep,
-    gom_dep,
-    libm_dep,
-    peas_dep,
-    sqlite_dep,
-    gstreamer_dep,
-    posix_dep,
-    json_dep,
-    libadwaita_dep,  # TODO: remove it
-  ],
-  include_directories: config_h_dir,
-)
-
-libfocus_timer_dep = declare_dependency(
-  link_with: libfocus_timer,
-  dependencies: [
-    gio_dep,
-    gobject_dep,
-    gom_dep,
-    peas_dep,
-    gstreamer_dep,
-    posix_dep,
-  ],
-  include_directories: [
-    # Include focus-timer.h
-    include_directories('.'),
-  ],
-)
+# Core
+subdir('core')
 
 
-# The focus-timer binary
-focus_timer_vala_sources = files(
+# Plugins
+subdir('plugins')
+
+
+# UI library
+libft_ui_sources = files(
   'ui/log/widgets/time-label.vala',
   'ui/log/log-window.vala',
   'ui/main/dialogs/about-dialog.vala',
@@ -183,25 +80,31 @@ focus_timer_vala_sources = files(
   'ui/utils.vala',
   'application.vala',
   'dbus-services.vala',
-  'main.vala',
 )
-focus_timer_sources = [
-  focus_timer_vala_sources,
-  resources,
-]
 
-executable(
-  'focus-timer',
-  focus_timer_sources,
+libft_ui = static_library(
+  'ft_ui',
+  libft_ui_sources + resources,
   dependencies: [
-    libfocus_timer_dep,
+    libft_core_dep,
     gtk_dep,
     gtk_x11_dep,
     gtk_wayland_dep,
     cairo_dep,
     graphene_dep,
     libadwaita_dep,
+    peas_dep,
   ],
+  include_directories: config_h_dir,
+)
+
+# The focus-timer executable
+executable(
+  'focus-timer',
+  'main.vala',
+  dependencies: [libft_core_dep, gtk_dep, libadwaita_dep, peas_dep],
+  link_whole: [libft_ui] + libft_plugins,
+  export_dynamic: true,
   include_directories: config_h_dir,
   install: true,
 )

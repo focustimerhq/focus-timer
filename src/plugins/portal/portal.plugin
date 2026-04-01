@@ -1,0 +1,6 @@
+[Plugin]
+Name=Portal
+Module=portal
+Builtin=true
+Embedded=portal_peas_register_types
+X-Priority=default

@@ -47,8 +47,6 @@ namespace Ft
 
         protected override void setup_providers ()
         {
-            this.providers.add (new Freedesktop.ScreenSaverProvider ());
-            this.providers.add (new Gnome.ScreenSaverProvider (), Ft.Priority.HIGH);
         }
 
         protected override void provider_enabled (Ft.ScreenSaverProvider provider)

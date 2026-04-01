@@ -614,9 +614,6 @@ namespace Ft
 
         private void setup_providers ()
         {
-            // TODO: providers should be registered staticly
-            this.screen_overlay_manager.add_provider (
-                    new Gnome.ScreenOverlayProvider (), Ft.Priority.HIGH);
             this.screen_overlay_manager.add_provider (
                     new Ft.DefaultScreenOverlayProvider (), Ft.Priority.DEFAULT);
         }
@@ -624,6 +621,19 @@ namespace Ft
         private void setup_extension ()
         {
             this.extension = new Ft.DesktopExtension ();
+        }
+
+        private void setup_plugins ()
+        {
+            var engine = Peas.Engine.get_default ();
+            engine.add_search_path ("resource:///plugins", "resource:///plugins");
+            engine.rescan_plugins ();
+
+            var n_plugins = engine.get_n_items ();
+            for (var i = 0U; i < n_plugins; i++) {
+                var plugin_info = (Peas.PluginInfo) engine.get_item (i);
+                engine.load_plugin (plugin_info);
+            }
         }
 
         private void update_color_scheme ()
@@ -675,6 +685,7 @@ namespace Ft
 
             this.setup_resources ();
             this.setup_database ();
+            this.setup_plugins ();
             this.setup_providers ();
             this.setup_extension ();
             this.setup_actions ();

@@ -68,6 +68,10 @@ add_project_arguments(
     '-Wno-unused-function',
     '-Wno-sign-compare',
     '-Wno-address',
+    # TODO: Remove this after upgrading to valac 0.57+.
+    #       Vala doesn't generate proper headers for construct properties
+    #       of interface type.
+    '-Wno-implicit-function-declaration',
   ],
   language: 'c',
 )

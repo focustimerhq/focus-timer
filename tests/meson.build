@@ -2,7 +2,7 @@
 libtests_common = static_library(
   'tests',
   'common.vala',
-  dependencies: libfocus_timer_dep,
+  dependencies: libft_core_dep,
   install: false
 )
 
@@ -53,7 +53,7 @@ foreach test_name : test_names
     executable(
       f'test-@test_name@',
       test_sources,
-      dependencies: libfocus_timer_dep,
+      dependencies: libft_core_dep,
       link_with: libtests_common,
       c_args: [
         '-UG_DISABLE_ASSERT',

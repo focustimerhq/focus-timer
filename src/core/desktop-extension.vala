@@ -70,14 +70,12 @@ namespace Ft
             this.providers.provider_enabled.connect (this.on_provider_enabled);
             this.providers.provider_disabled.connect (this.on_provider_disabled);
 
-            this.setup_providers ();
-
+            this.providers.discover ();
             this.providers.enable ();
         }
 
         private void setup_providers ()
         {
-            this.providers.add (new Gnome.DesktopExtensionProvider (), Ft.Priority.HIGH);
         }
 
         private void update_status ()

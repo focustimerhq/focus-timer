@@ -1,0 +1,6 @@
+[Plugin]
+Name=Freedesktop
+Module=freedesktop
+Builtin=true
+Embedded=freedesktop_peas_register_types
+X-Priority=default

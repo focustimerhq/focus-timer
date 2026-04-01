@@ -80,7 +80,9 @@ namespace Ft
             this.providers.provider_unselected.connect (this.on_provider_unselected);
             this.providers.provider_enabled.connect (this.on_provider_enabled);
             this.providers.provider_disabled.connect (this.on_provider_disabled);
-            this.providers.add (new Portal.GlobalShortcutsProvider ());
+
+            this.providers.discover ();
+            this.providers.enable ();
         }
 
         private void populate_provider ()
@@ -172,20 +174,6 @@ namespace Ft
                                             description,
                                             default_accelerator);
             }
-        }
-
-        /**
-         * We allow global-shortcuts to be implemented externally or overridden
-         * through `CapabilityManager`.
-         */
-        public void enable_global_shortcuts ()
-        {
-            this.providers.enable ();
-        }
-
-        public void disable_global_shortcuts ()
-        {
-            this.providers.disable ();
         }
 
         /**
