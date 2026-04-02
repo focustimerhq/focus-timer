@@ -1,9 +1,9 @@
 sounds = [
   'bell.ogg',
-  'birds.ogg',
+  'brown-noise.ogg',
   'clock.ogg',
   'loud-bell.ogg',
-  'timer.ogg',
+  'metronome.ogg',
 ]
 
 foreach s:sounds

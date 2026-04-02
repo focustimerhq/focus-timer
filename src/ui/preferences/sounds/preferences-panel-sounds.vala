@@ -22,8 +22,8 @@ namespace Ft
         };
         private const Preset[] BACKGROUND_PRESETS = {
             { "clock.ogg", N_("Clock Ticking") },
-            { "timer.ogg", N_("Timer Ticking") },
-            { "birds.ogg", N_("Birds") },
+            { "metronome.ogg", N_("Metronome") },
+            { "brown-noise.ogg", N_("Brown Noise") },
         };
 
         [GtkChild]
