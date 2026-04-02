@@ -181,6 +181,26 @@ namespace Ft
     }
 
 
+    public delegate void ExtensionSetForeachFunc (GLib.Object object);
+
+    /**
+     * Bindings for `Peas.ExtensionSet.@foreach` seem to be broken.
+     *
+     * Here's an simpler, Vala-friendly implementation.
+     */
+    public void foreach_extension (Peas.ExtensionSet       extension_set,
+                                   ExtensionSetForeachFunc func)
+    {
+        var n_items = extension_set.get_n_items ();
+
+        for (var i = 0U; i < n_items; i++)
+        {
+            var object = extension_set.get_item (i);
+
+            func (object);
+        }
+    }
+
 
     /**
      * A convenience wrapper around GLib.Queue that provides an async wait()

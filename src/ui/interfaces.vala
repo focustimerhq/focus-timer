@@ -17,29 +17,29 @@ namespace Ft
     public abstract class WindowExtension : GLib.Object
     {
         public Ft.Window? window {
-            get {
-                return this._window;
+            owned get {
+                return this.window_ref.@get () as Ft.Window;
             }
             set {
-                this._window = value;
+                this.window_ref.@set (value);
             }
         }
 
-        private unowned Ft.Window? _window = null;
+        private GLib.WeakRef window_ref;
     }
 
 
     public abstract class PreferencesWindowExtension : GLib.Object
     {
         public Ft.PreferencesWindow? window {
-            get {
-                return this._window;
+            owned get {
+                return this.window_ref.@get () as Ft.PreferencesWindow;
             }
             set {
-                this._window = value;
+                this.window_ref.@set (value);
             }
         }
 
-        private unowned Ft.PreferencesWindow? _window = null;
+        private GLib.WeakRef window_ref;
     }
 }

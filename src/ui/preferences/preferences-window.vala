@@ -125,12 +125,15 @@ namespace Ft
             this.load_window_state ();
             this.update_split_view_content ();
 
-            var window_value = GLib.Value (GLib.Type.OBJECT);
-            window_value.set_object (this);
-
             this.extensions = new Peas.ExtensionSet.with_properties (
                     Peas.Engine.get_default (),
-                    typeof (Ft.PreferencesWindowExtension), {"window"}, {window_value});
+                    typeof (Ft.PreferencesWindowExtension), {}, {});
+            this.extensions.extension_added.connect (this.on_extension_added);
+
+            foreach_extension (this.extensions,
+                (object) => {
+                    this.setup_extension (object);
+                });
         }
 
         private void load_window_state ()
@@ -191,6 +194,12 @@ namespace Ft
             }
         }
 
+        private void setup_extension (GLib.Object object)
+        {
+            var extension = (Ft.PreferencesWindowExtension) object;
+            extension.window = this;
+        }
+
         private void on_split_view_collapsed_notify ()
         {
             this.sidebar.selection_mode = this.split_view.collapsed ? Gtk.SelectionMode.NONE : Gtk.SelectionMode.SINGLE;
@@ -200,6 +209,13 @@ namespace Ft
                                            uint n_items)
         {
             this.update_split_view_content ();
+        }
+
+        private void on_extension_added (Peas.ExtensionSet extension_set,
+                                         Peas.PluginInfo   plugin_info,
+                                         GLib.Object       object)
+        {
+            this.setup_extension (object);
         }
 
         public bool select_panel (string panel_name)

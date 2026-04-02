@@ -167,12 +167,15 @@ namespace Ft
             this.update_title ();
             this.update_timer_indicator ();
 
-            var window_value = GLib.Value (GLib.Type.OBJECT);
-            window_value.set_object (this);
-
             this.extensions = new Peas.ExtensionSet.with_properties (
                     Peas.Engine.get_default (),
-                    typeof (Ft.WindowExtension), {"window"}, {window_value});
+                    typeof (Ft.WindowExtension), {}, {});
+            this.extensions.extension_added.connect (this.on_extension_added);
+
+            foreach_extension (this.extensions,
+                (object) => {
+                    this.setup_extension (object);
+                });
         }
 
         private void update_title ()
@@ -413,6 +416,19 @@ namespace Ft
             else {
                 this.lookup_action ("normal-size").activate (null);
             }
+        }
+
+        private void on_extension_added (Peas.ExtensionSet extension_set,
+                                         Peas.PluginInfo   plugin_info,
+                                         GLib.Object       object)
+        {
+            this.setup_extension (object);
+        }
+
+        private void setup_extension (GLib.Object object)
+        {
+            var extension = (Ft.WindowExtension) object;
+            extension.window = this;
         }
 
         private void setup_actions ()

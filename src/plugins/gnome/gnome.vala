@@ -17,16 +17,16 @@ namespace Gnome
         object_module.register_extension_type (typeof (Ft.WindowExtension),
                                                typeof (Gnome.WindowExtension));
 
-        object_module.register_extension_type (typeof (Ft.ScreenOverlayProvider),
-                                               typeof (Gnome.ScreenOverlayProvider));
-
-        object_module.register_extension_type (typeof (Ft.ScreenSaverProvider),
-                                               typeof (Gnome.ScreenSaverProvider));
+        object_module.register_extension_type (typeof (Ft.PreferencesWindowExtension),
+                                               typeof (Gnome.PreferencesWindowExtension));
 
         object_module.register_extension_type (typeof (Ft.IdleMonitorProvider),
                                                typeof (Gnome.IdleMonitorProvider));
 
-        object_module.register_extension_type (typeof (Ft.PreferencesWindowExtension),
-                                               typeof (Gnome.PreferencesWindowExtension));
+        object_module.register_extension_type (typeof (Ft.ScreenSaverProvider),
+                                               typeof (Gnome.ScreenSaverProvider));
+
+        object_module.register_extension_type (typeof (Ft.ScreenOverlayProvider),
+                                               typeof (Gnome.ScreenOverlayProvider));
     }
 }
