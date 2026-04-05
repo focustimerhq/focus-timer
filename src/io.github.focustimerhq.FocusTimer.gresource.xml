@@ -54,8 +54,6 @@
     <!-- CSS -->
     <file alias="style.css" compressed="true">ui/style.css</file>
     <file alias="style-dark.css" compressed="true">ui/style-dark.css</file>
-    <file alias="style-hc.css" compressed="true">ui/style-hc.css</file>
-    <file alias="style-hc-dark.css" compressed="true">ui/style-hc-dark.css</file>
 
     <!-- Icons -->
     <file preprocess="xml-stripblanks">icons/24x24/actions/timer-pause-symbolic.svg</file>
