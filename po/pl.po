@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: focus-timer 1.0-alpha\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-04-05 11:05+0200\n"
-"PO-Revision-Date: 2026-01-10 12:04+0100\n"
+"PO-Revision-Date: 2026-04-05 11:24+0200\n"
 "Last-Translator: Kamil Prusko <kamilprusko@gmail.com>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 49.0\n"
+"X-Generator: Gtranslator 50.0\n"
 
 #. translators: consider 'Concentration Timer' as an alternative, whichever sounds more natural
 #: data/io.github.focustimerhq.FocusTimer.desktop.in.in:2
@@ -649,6 +649,8 @@ msgstr "Mniej rozproszeń"
 msgid ""
 "Let <b>Focus Timer</b> manage system notifications while the timer is running"
 msgstr ""
+"Pozwól by <b>Minutnik Koncentracji</b> zarządzał powiadomieniami systemowymi "
+"w trakcie działania"
 
 #: src/plugins/gnome/install-extension-dialog.ui:170
 msgid "Refined break reminders"
@@ -712,7 +714,7 @@ msgstr "Nie udało się pobrać rozszerzenia"
 
 #: src/plugins/gnome/preferences-window-extension.vala:55
 msgid "Indicator"
-msgstr ""
+msgstr "Wskaźnik"
 
 #: src/plugins/gnome/preferences-window-extension.vala:62
 msgid "Icon"
@@ -724,7 +726,7 @@ msgstr "Tekst"
 
 #: src/plugins/gnome/preferences-window-extension.vala:70
 msgid "Display As"
-msgstr ""
+msgstr "Wyświetl Jako"
 
 #: src/plugins/gnome/preferences-window-extension.vala:81
 #: src/ui/preferences/notifications/preferences-panel-notifications.ui:28
@@ -734,11 +736,11 @@ msgstr "Nakładka Ekranowa"
 
 #: src/plugins/gnome/preferences-window-extension.vala:85
 msgid "Blur Effect"
-msgstr ""
+msgstr "Efekt Rozmycia"
 
 #: src/plugins/gnome/preferences-window-extension.vala:93
 msgid "Dismiss Gesture"
-msgstr ""
+msgstr "Gest Odrzucenia"
 
 #: src/plugins/gnome/preferences-window-extension.vala:125
 msgid "Desktop"
@@ -746,27 +748,27 @@ msgstr "Pulpit"
 
 #: src/plugins/gnome/preferences-window-extension.vala:128
 msgid "Install"
-msgstr ""
+msgstr "Zainstaluj"
 
 #: src/plugins/gnome/preferences-window-extension.vala:132
 msgid "Update"
-msgstr ""
+msgstr "Zaktualizuj"
 
 #: src/plugins/gnome/preferences-window-extension.vala:135
 msgid "Log out to finish the update"
-msgstr ""
+msgstr "Wyloguj się by zakończyć aktualizację"
 
 #: src/plugins/gnome/preferences-window-extension.vala:153
 msgid "Outdated"
-msgstr ""
+msgstr "Brak Wsparcia"
 
 #: src/plugins/gnome/preferences-window-extension.vala:172
 msgid "Manage Notifications"
-msgstr ""
+msgstr "Zarządzaj Powiadomieniami"
 
 #: src/plugins/gnome/preferences-window-extension.vala:173
 msgid "Toggle Do Not Disturb mode during Pomodoro."
-msgstr ""
+msgstr "Aktywuj tryb <i>Nie Przeszkadzać</i> podczas Pomodoro."
 
 #: src/plugins/gnome/window-extension.vala:32
 msgid "GNOME Shell extension available"
@@ -1256,17 +1258,18 @@ msgstr "Odpal polecenia automatycznie wg wydarzeń lub warunków."
 
 #: src/ui/preferences/integrations/preferences-panel-integrations.ui:19
 msgid "Autostart"
-msgstr ""
+msgstr "Automatyczne Uruchamianie"
 
 #: src/ui/preferences/integrations/preferences-panel-integrations.ui:20
 msgid "Automatically launch the app when you log in."
-msgstr ""
+msgstr "Odpal aplikację przy starcie systemu."
 
 #: src/ui/preferences/integrations/preferences-panel-integrations.ui:25
 msgid ""
 "The app will start in the background. You'll be able to use the indicator "
 "and keyboard shortcuts."
 msgstr ""
+"Aplikacja uruchomi się w tle. Możesz używać wskaźnika i skrutów klawiszowych."
 
 #: src/ui/preferences/keyboard-shortcuts/accelerator-chooser-window.ui:14
 msgid "Set Shortcut"
@@ -1397,7 +1400,7 @@ msgstr "Skróty Klawiszowe"
 
 #: src/ui/preferences/preferences-window.vala:71
 msgid "Integrations"
-msgstr ""
+msgstr "Powiązania"
 
 #: src/ui/preferences/preferences-window.vala:79
 msgid "Automation"
@@ -1438,11 +1441,11 @@ msgstr "Tykanie Zegara"
 
 #: src/ui/preferences/sounds/preferences-panel-sounds.vala:25
 msgid "Metronome"
-msgstr ""
+msgstr "Meteronom"
 
 #: src/ui/preferences/sounds/preferences-panel-sounds.vala:26
 msgid "Brown Noise"
-msgstr ""
+msgstr "Szum Brązowy"
 
 #: src/ui/preferences/sounds/preferences-panel-sounds.vala:88
 #: src/ui/preferences/sounds/sound-chooser-window.ui:25

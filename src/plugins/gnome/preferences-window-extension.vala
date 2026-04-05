@@ -129,6 +129,7 @@ namespace Gnome
                 install_button.add_css_class ("suggested-action");
                 install_button.clicked.connect (() => this.install_extension ());
 
+                /* translators: verb */
                 var update_button = new Gtk.Button.with_label (_("Update"));
                 update_button.add_css_class ("suggested-action");
                 update_button.clicked.connect (
