@@ -822,8 +822,8 @@ msgstr ""
 "liberumed <liberumed@gmail.com>, 2013\n"
 "Max 'tigertv' Vetrov <maxvetrov555@yandex.ru>, 2018\n"
 "Roman Kaverin <roman.kaverin@gmail.com>, 2020\n"
-"Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2021ViktorOn <https://"
-"github.com/ViktorOn>, 2022"
+"Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2021\n"
+"ViktorOn https://github.com/ViktorOn 2022"
 
 #: src/ui/main/dialogs/about-dialog.vala:36
 msgid "Donate"

@@ -906,7 +906,7 @@ msgstr "இயக்க நேரம்:"
 
 #: src/ui/main/dialogs/about-dialog.vala:30
 msgid "translator-credits"
-msgstr "Killersparrow1 <github.com/Killersparrow1>, 2025"
+msgstr "Killersparrow1 https://github.com/Killersparrow1 2025"
 
 #: src/ui/main/dialogs/about-dialog.vala:36
 #, fuzzy

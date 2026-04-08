@@ -13,7 +13,7 @@ namespace Ft
     {
         var about_dialog = new Adw.AboutDialog ();
         about_dialog.application_icon = Config.APPLICATION_ID;
-        // translators: consider 'Concentration Timer' as an alternative, whichever sounds more natural
+        // translators: Consider "Concentration Timer" as an alternative.
         about_dialog.application_name = _("Focus Timer");
         about_dialog.version = Config.PACKAGE_VERSION;
         about_dialog.website = Config.PACKAGE_WEBSITE;
@@ -27,6 +27,7 @@ namespace Ft
         about_dialog.copyright = "\xc2\xa9 2011-2026 Arun Mahapatra, Kamil Prusko";
         about_dialog.license_type = Gtk.License.GPL_3_0;
 
+        // translators: Replace this string with your names, one name per line.
         var translator_credits = _("translator-credits");
 
         if (translator_credits != "translator-credits") {

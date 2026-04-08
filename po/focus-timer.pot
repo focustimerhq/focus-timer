@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: focus-timer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-05 11:06+0200\n"
+"POT-Creation-Date: 2026-04-08 18:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#. translators: consider 'Concentration Timer' as an alternative, whichever sounds more natural
+#. translators: Consider "Concentration Timer" as an alternative.
 #: data/io.github.focustimerhq.FocusTimer.desktop.in.in:2
 #: data/io.github.focustimerhq.FocusTimer.metainfo.xml.in:9 src/main.vala:35
 #: src/ui/main/dialogs/about-dialog.vala:17
@@ -126,12 +126,12 @@ msgstr ""
 msgid "Updated Russian translation (thanks @ViktorOn)"
 msgstr ""
 
-#: src/application.vala:153 src/application.vala:593
+#: src/application.vala:153 src/application.vala:595
 #: src/ui/preferences/keyboard-shortcuts/preferences-panel-keyboard-shortcuts.ui:40
 msgid "Start or Stop"
 msgstr ""
 
-#: src/application.vala:156 src/application.vala:596
+#: src/application.vala:156 src/application.vala:598
 #: src/ui/preferences/keyboard-shortcuts/preferences-panel-keyboard-shortcuts.ui:47
 msgid "Start, Pause or Resume"
 msgstr ""
@@ -157,35 +157,35 @@ msgid "Start long break"
 msgstr ""
 
 #. Actions
-#: src/application.vala:171 src/application.vala:598 src/core/event.vala:268
+#: src/application.vala:171 src/application.vala:600 src/core/event.vala:268
 #: src/ui/preferences/keyboard-shortcuts/preferences-panel-keyboard-shortcuts.ui:57
 msgid "Start"
 msgstr ""
 
-#: src/application.vala:174 src/application.vala:600 src/core/event.vala:276
+#: src/application.vala:174 src/application.vala:602 src/core/event.vala:276
 #: src/ui/main/timer/widgets/timer-control-buttons.ui:139
 #: src/ui/preferences/keyboard-shortcuts/preferences-panel-keyboard-shortcuts.ui:64
 msgid "Stop"
 msgstr ""
 
-#: src/application.vala:177 src/application.vala:602 src/core/event.vala:284
+#: src/application.vala:177 src/application.vala:604 src/core/event.vala:284
 #: src/ui/main/timer/widgets/timer-control-buttons.ui:83
 #: src/ui/preferences/keyboard-shortcuts/preferences-panel-keyboard-shortcuts.ui:71
 msgid "Pause"
 msgstr ""
 
-#: src/application.vala:180 src/application.vala:604 src/core/event.vala:292
+#: src/application.vala:180 src/application.vala:606 src/core/event.vala:292
 #: src/ui/main/timer/widgets/timer-control-buttons.ui:97
 #: src/ui/preferences/keyboard-shortcuts/preferences-panel-keyboard-shortcuts.ui:78
 msgid "Resume"
 msgstr ""
 
-#: src/application.vala:183 src/application.vala:606 src/core/event.vala:300
+#: src/application.vala:183 src/application.vala:608 src/core/event.vala:300
 #: src/ui/preferences/keyboard-shortcuts/preferences-panel-keyboard-shortcuts.ui:85
 msgid "Skip"
 msgstr ""
 
-#: src/application.vala:186 src/application.vala:608 src/core/event.vala:308
+#: src/application.vala:186 src/application.vala:610 src/core/event.vala:308
 msgid "Rewind"
 msgstr ""
 
@@ -231,18 +231,18 @@ msgstr ""
 msgid "Bugs may be reported at: %s"
 msgstr ""
 
-#: src/application.vala:610
+#: src/application.vala:612
 #: src/ui/preferences/keyboard-shortcuts/preferences-panel-keyboard-shortcuts.ui:106
 msgid "Bring to Focus"
 msgstr ""
 
 #. translators: time remaining eg. "3 minutes 50 seconds remaining"
-#: src/application.vala:797 src/core/notification-manager.vala:138
+#: src/application.vala:799 src/core/notification-manager.vala:138
 #, c-format
 msgid "%s remaining"
 msgstr ""
 
-#: src/application.vala:840
+#: src/application.vala:842
 msgid "Invalid use. Pass one flag for controlling the timer at a time."
 msgstr ""
 
@@ -595,7 +595,7 @@ msgid "Time when the countdown has started."
 msgstr ""
 
 #: src/plugins/gnome/install-extension-dialog.ui:6
-#: src/plugins/gnome/preferences-window-extension.vala:166
+#: src/plugins/gnome/preferences-window-extension.vala:167
 msgid "GNOME Shell Extension"
 msgstr ""
 
@@ -650,7 +650,7 @@ msgid "_Not Now"
 msgstr ""
 
 #: src/plugins/gnome/install-extension-dialog.ui:317
-#: src/plugins/gnome/preferences-window-extension.vala:399
+#: src/plugins/gnome/preferences-window-extension.vala:400
 msgid "Something went wrong"
 msgstr ""
 
@@ -669,17 +669,17 @@ msgid "_Abort"
 msgstr ""
 
 #: src/plugins/gnome/install-extension-dialog.vala:85
-#: src/plugins/gnome/preferences-window-extension.vala:387
+#: src/plugins/gnome/preferences-window-extension.vala:388
 msgid "Time-out reached"
 msgstr ""
 
 #: src/plugins/gnome/install-extension-dialog.vala:90
-#: src/plugins/gnome/preferences-window-extension.vala:391
+#: src/plugins/gnome/preferences-window-extension.vala:392
 msgid "Installing extensions is not allowed"
 msgstr ""
 
 #: src/plugins/gnome/install-extension-dialog.vala:95
-#: src/plugins/gnome/preferences-window-extension.vala:395
+#: src/plugins/gnome/preferences-window-extension.vala:396
 msgid "Failed to download the extension"
 msgstr ""
 
@@ -721,23 +721,24 @@ msgstr ""
 msgid "Install"
 msgstr ""
 
-#: src/plugins/gnome/preferences-window-extension.vala:132
+#. translators: verb
+#: src/plugins/gnome/preferences-window-extension.vala:133
 msgid "Update"
 msgstr ""
 
-#: src/plugins/gnome/preferences-window-extension.vala:135
+#: src/plugins/gnome/preferences-window-extension.vala:136
 msgid "Log out to finish the update"
 msgstr ""
 
-#: src/plugins/gnome/preferences-window-extension.vala:153
+#: src/plugins/gnome/preferences-window-extension.vala:154
 msgid "Outdated"
 msgstr ""
 
-#: src/plugins/gnome/preferences-window-extension.vala:172
+#: src/plugins/gnome/preferences-window-extension.vala:173
 msgid "Manage Notifications"
 msgstr ""
 
-#: src/plugins/gnome/preferences-window-extension.vala:173
+#: src/plugins/gnome/preferences-window-extension.vala:174
 msgid "Toggle Do Not Disturb mode during Pomodoro."
 msgstr ""
 
@@ -790,11 +791,12 @@ msgstr ""
 msgid "Execution Time:"
 msgstr ""
 
-#: src/ui/main/dialogs/about-dialog.vala:30
+#. translators: Replace this string with your names, one name per line.
+#: src/ui/main/dialogs/about-dialog.vala:31
 msgid "translator-credits"
 msgstr ""
 
-#: src/ui/main/dialogs/about-dialog.vala:36
+#: src/ui/main/dialogs/about-dialog.vala:37
 msgid "Donate"
 msgstr ""
 

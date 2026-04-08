@@ -810,7 +810,7 @@ msgstr ""
 
 #: src/ui/main/dialogs/about-dialog.vala:30
 msgid "translator-credits"
-msgstr "Sébastien Zurfluh (2019)"
+msgstr "Sébastien Zurfluh, 2019"
 
 #: src/ui/main/dialogs/about-dialog.vala:36
 msgid "Donate"
