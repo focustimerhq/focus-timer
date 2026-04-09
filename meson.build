@@ -30,8 +30,8 @@ gtk_wayland_dep = dependency('gtk4-wayland', required: false)
 bash_completion_dep = dependency('bash-completion', required: false)
 
 cc = meson.get_compiler('c')
-libm_dep = cc.find_library('m')
 valac = meson.get_compiler('vala')
+libm_dep = cc.find_library('m')
 posix_dep = valac.find_library('posix')
 
 check_headers = [
@@ -105,6 +105,10 @@ endif
 
 if get_option('profile') == 'development'
   add_project_arguments(['--enable-checking'], language: 'vala')
+endif
+
+if valac.version().version_compare('>= 0.56.19')
+  add_project_arguments(['-D', 'VALA_0_56_19'], language: 'vala')
 endif
 
 application_id = 'io.github.focustimerhq.FocusTimer'

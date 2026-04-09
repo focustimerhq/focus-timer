@@ -91,7 +91,12 @@ namespace Ft
             this.drag_widget.append (row);
             this.drag_widget.drag_highlight_row (row);
 
+            #if VALA_0_56_19
+            var drag_icon = new Gtk.DragIcon.get_for_drag (drag);
+            #else
             var drag_icon = (Gtk.DragIcon) Gtk.DragIcon.get_for_drag (drag);
+            #endif
+
             drag_icon.child = this.drag_widget;
 
             drag.set_hotspot ((int) this.drag_x, (int) this.drag_y);
