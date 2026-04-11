@@ -1854,7 +1854,8 @@ namespace Ft
         {
             if (this._current_time_block == null ||
                 this._current_time_block.state != Ft.State.POMODORO ||
-                !this._timer.is_running () && !this.auto_paused)
+                !this._timer.is_running () && !this.auto_paused ||
+                this.resolving_timer_state > 0)
             {
                 return false;
             }
@@ -1965,7 +1966,9 @@ namespace Ft
 
         private void update_auto_pause ()
         {
-            if (this._current_time_block != null && this.settings.get_boolean ("pause-on-lockscreen")) {
+            if (this._current_time_block != null &&
+                this.settings.get_boolean ("pause-on-lockscreen"))
+            {
                 this.enable_auto_pause ();
             }
             else {
