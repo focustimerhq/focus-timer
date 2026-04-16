@@ -7,7 +7,7 @@
   <translation type="gettext">focus-timer</translation>
   ​<launchable type="desktop-id">io.github.focustimerhq.FocusTimer.desktop</launchable>
   <name>Focus Timer</name>
-  <summary>Maintain focus by taking frequent breaks</summary>
+  <summary>Work with regular breaks</summary>
   <description>
     <p>
       A productivity timer that helps you work more effectively by breaking your time into focused work sessions followed by short breaks.
@@ -90,6 +90,17 @@
 
   <!-- Releases -->
   <releases>
+    <release version="1.1.0" date="2026-04-16">
+      <description translate="no">
+        <p>Overview of changes in focus-timer 1.1.0:</p>
+        <ul>
+          <li>Support for GNOME Shell extension</li>
+          <li>Option to autostart on login</li>
+          <li>Reviewed sound files</li>
+          <li>Fix build with vala 0.56.19</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0" date="2026-03-01">
       <description translate="no">
         <p>Overview of changes in focus-timer 1.0:</p>
