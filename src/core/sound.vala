@@ -351,8 +351,10 @@ namespace Ft
         private dynamic Gst.Element volume_filter;
         private bool                _is_playing = false;
         private bool                is_about_to_finish = false;
+        private uint                instance_id = 0;
 
         private static bool is_gstreamer_initialized = false;
+        private static uint next_instance_id = 1;
 
         public GStreamerBackend () throws GLib.Error
         {
@@ -378,6 +380,7 @@ namespace Ft
 
             this.pipeline = pipeline;
             this.volume_filter = volume_filter;
+            this.instance_id = next_instance_id++;
         }
 
         public static string[] get_supported_mime_types ()
@@ -392,6 +395,11 @@ namespace Ft
                                      string     content_type)
         {
             return file != null && is_mime_type (content_type, GStreamerBackend.get_supported_mime_types ());
+        }
+
+        private string get_debug_name ()
+        {
+            return "GStreamerBackend#%u".printf (this.instance_id);
         }
 
         private void finished ()
@@ -422,6 +430,8 @@ namespace Ft
             Gst.State pending_state;
 
             GLib.Error? error = null;
+            string? debug_info = null;
+            var src_name = message.src != null ? message.src.name : "<unknown>";
 
             this.pipeline.get_state (out state,
                                      out pending_state,
@@ -461,10 +471,30 @@ namespace Ft
                         this.is_about_to_finish = false;
                     }
 
-                    message.parse_error (out error, null);
+                    message.parse_error (out error, out debug_info);
+
+                    GLib.warning ("%s: error from %s: %s%s",
+                                  this.get_debug_name (),
+                                  src_name,
+                                  error.message,
+                                  debug_info != null && debug_info != ""
+                                      ? " [debug: %s]".printf (debug_info)
+                                      : "");
 
                     this.pipeline.set_state (Gst.State.NULL);
                     this.playback_error (error);
+                    break;
+
+                case Gst.MessageType.WARNING:
+                    message.parse_warning (out error, out debug_info);
+
+                    GLib.warning ("%s: warning from %s: %s%s",
+                                  this.get_debug_name (),
+                                  src_name,
+                                  error.message,
+                                  debug_info != null && debug_info != ""
+                                      ? " [debug: %s]".printf (debug_info)
+                                      : "");
                     break;
 
                 default:
@@ -570,14 +600,28 @@ namespace Ft
         private string           _uri = "";
         private Ft.SoundBackend? _backend = null;
 
+        protected virtual string get_debug_name ()
+        {
+            return this.get_type ().name ();
+        }
+
+        protected string get_absolute_uri ()
+        {
+            return build_absolute_uri (this._uri);
+        }
+
         private void on_playback_error (GLib.Error error)
         {
+            GLib.warning ("%s: playback error for uri=%s: %s",
+                          this.get_debug_name (),
+                          this.get_absolute_uri (),
+                          error.message);
             this.error = error;
         }
 
         private void prepare ()
         {
-            var file = this._uri != "" ? GLib.File.new_for_uri (build_absolute_uri (this._uri)) : null;
+            var file = this._uri != "" ? GLib.File.new_for_uri (this.get_absolute_uri ()) : null;
             var content_type = file != null ? GLib.ContentType.guess (file.get_basename (), null, null) : "";
             var backend = this._backend;
 
@@ -616,7 +660,10 @@ namespace Ft
             }
             catch (GLib.Error error)
             {
-                GLib.warning ("Error while initializing sound player: %s", error.message);
+                GLib.warning ("%s: error while initializing sound player for uri=%s: %s",
+                              this.get_debug_name (),
+                              this.get_absolute_uri (),
+                              error.message);
 
                 if (this._backend != null) {
                     this.destroy_backend ();
@@ -649,6 +696,12 @@ namespace Ft
         {
             if (this._backend != null) {
                 this._backend.play ();
+            }
+            else {
+                GLib.warning ("%s: play requested without an initialized backend (uri=%s error=%s)",
+                              this.get_debug_name (),
+                              this.get_absolute_uri (),
+                              this.error != null ? this.error.message : "<none>");
             }
         }
 
@@ -691,6 +744,11 @@ namespace Ft
             GLib.Object (
                 event_id: event_id
             );
+        }
+
+        protected override string get_debug_name ()
+        {
+            return "%s[event_id=%s]".printf (this.get_type ().name (), this.event_id);
         }
 
         protected override void initialize_backend ()
