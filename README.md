@@ -24,17 +24,17 @@ Key features:
 
 ## Screenshots
 
-![Timer](https://gnomepomodoro.org/release/1.0/timer.png)
+![Timer](https://gnomepomodoro.org/release/1.1/timer.png)
 
-![Compact timer](https://gnomepomodoro.org/release/1.0/compact-timer.png)
+![Compact timer](https://gnomepomodoro.org/release/1.1/compact-timer.png)
 
-![Daily stats](https://gnomepomodoro.org/release/1.0/stats-daily.png)
+![Daily stats](https://gnomepomodoro.org/release/1.1/stats-daily.png)
 
-![Monthly stats](https://gnomepomodoro.org/release/1.0/stats-monthly.png)
+![Monthly stats](https://gnomepomodoro.org/release/1.1/stats-monthly.png)
 
-![Preferences](https://gnomepomodoro.org/release/1.0/preferences.png)
+![Preferences](https://gnomepomodoro.org/release/1.1/preferences.png)
 
-![Screen overlay](https://gnomepomodoro.org/release/1.0/screen-overlay.png)
+![Screen overlay](https://gnomepomodoro.org/release/1.1/screen-overlay.png)
 
 <br/>
 

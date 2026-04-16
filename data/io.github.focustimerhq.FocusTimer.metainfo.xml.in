@@ -67,23 +67,23 @@
   <!-- Screenshots -->
   <screenshots>
     <screenshot type="default">
-      <image>https://gnomepomodoro.org/release/1.0/timer.png</image>
+      <image>https://gnomepomodoro.org/release/1.1/timer.png</image>
       <caption>Timer</caption>
     </screenshot>
     <screenshot>
-      <image>https://gnomepomodoro.org/release/1.0/stats-daily.png</image>
+      <image>https://gnomepomodoro.org/release/1.1/stats-daily.png</image>
       <caption>Daily stats</caption>
     </screenshot>
     <screenshot>
-      <image>https://gnomepomodoro.org/release/1.0/stats-monthly.png</image>
+      <image>https://gnomepomodoro.org/release/1.1/stats-monthly.png</image>
       <caption>Monthly stats</caption>
     </screenshot>
     <screenshot>
-      <image>https://gnomepomodoro.org/release/1.0/preferences.png</image>
+      <image>https://gnomepomodoro.org/release/1.1/preferences.png</image>
       <caption>Preferences</caption>
     </screenshot>
     <screenshot>
-      <image>https://gnomepomodoro.org/release/1.0/screen-overlay.png</image>
+      <image>https://gnomepomodoro.org/release/1.1/screen-overlay.png</image>
       <caption>Screen overlay</caption>
     </screenshot>
   </screenshots>
