@@ -643,7 +643,7 @@ namespace Ft
                         throw new Ft.SoundError.NOT_SUPPORTED (_("File type not supported"));
                     }
 
-                    return;
+                    backend = null;
                 }
 
                 // Initialize backend.
@@ -697,7 +697,7 @@ namespace Ft
             if (this._backend != null) {
                 this._backend.play ();
             }
-            else {
+            else if (this._uri != "") {
                 GLib.warning ("%s: play requested without an initialized backend (uri=%s error=%s)",
                               this.get_debug_name (),
                               this.get_absolute_uri (),
