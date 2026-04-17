@@ -11,29 +11,55 @@
           </object>
         </child>
         <property name="content">
-          <object class="AdwPreferencesPage" id="page">
-            <child>
-              <object class="AdwPreferencesGroup">
-                <property name="description" translatable="yes">Global shortcuts let you control the app even when it’s not on screen. They work as long as the app is running in the background.</property>
-                <property name="header-suffix">
-                  <object class="GtkButton">
-                    <property name="tooltip-text" translatable="yes">Open app settings for editing global shortcuts</property>
-                    <property name="margin-start">20</property>
-                    <property name="valign">center</property>
+          <object class="AdwBreakpointBin">
+            <property name="width-request">360</property>
+            <property name="height-request">200</property>
+            <property name="child">
+              <object class="AdwPreferencesPage" id="page">
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="description" translatable="yes">Global shortcuts let you control the app even when it’s not on screen. They work as long as the app is running in the background.</property>
+                    <property name="header-suffix">
+                      <object class="GtkButton" id="edit_button_wide">
+                        <property name="tooltip-text" translatable="yes">Open app settings for editing global shortcuts</property>
+                        <property name="margin-start">20</property>
+                        <property name="valign">center</property>
+                        <style>
+                          <class name="suggested-action"/>
+                        </style>
+                        <child>
+                          <object class="AdwButtonContent">
+                            <property name="label" translatable="yes">_Edit</property>
+                            <property name="use-underline">true</property>
+                            <property name="icon-name">document-edit-symbolic</property>
+                          </object>
+                        </child>
+                        <signal name="clicked" handler="on_edit_button_clicked"/>
+                      </object>
+                    </property>
                     <child>
-                      <object class="AdwButtonContent">
-                        <property name="label" translatable="yes">_Edit</property>
-                        <property name="use-underline">true</property>
-                        <property name="icon-name">document-edit-symbolic</property>
+                      <object class="GtkButton" id="edit_button_narrow">
+                        <property name="visible">false</property>
+                        <property name="tooltip-text" translatable="yes">Open app settings for editing global shortcuts</property>
+                        <property name="halign">center</property>
+                        <property name="margin-top">4</property>
+                        <style>
+                          <class name="suggested-action"/>
+                        </style>
+                        <child>
+                          <object class="AdwButtonContent">
+                            <property name="label" translatable="yes">_Edit</property>
+                            <property name="use-underline">true</property>
+                            <property name="icon-name">document-edit-symbolic</property>
+                          </object>
+                        </child>
+                        <signal name="clicked" handler="on_edit_button_clicked"/>
                       </object>
                     </child>
-                    <signal name="clicked" handler="on_edit_button_clicked"/>
                   </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwPreferencesGroup">
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
                 <property name="title" translatable="yes">Timer</property>
                 <child>
                   <object class="FtAcceleratorRow" id="start_stop_timer_row">
@@ -96,18 +122,27 @@
                     </child>
                   </object>
                 </child>
-              </object>
-            </child>
-            <child>
-              <object class="AdwPreferencesGroup">
-                <property name="title" translatable="yes">Main Window</property>
-                <child>
-                  <object class="FtAcceleratorRow" id="toggle_window_row">
-                    <property name="title" translatable="yes">Bring to Focus</property>
-                    <property name="description" translatable="yes">Enter new shortcut for bringing window to focus</property>
-                    <property name="activatable">false</property>
                   </object>
                 </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Main Window</property>
+                    <child>
+                      <object class="FtAcceleratorRow" id="toggle_window_row">
+                        <property name="title" translatable="yes">Bring to Focus</property>
+                        <property name="description" translatable="yes">Enter new shortcut for bringing window to focus</property>
+                        <property name="activatable">false</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <child>
+              <object class="AdwBreakpoint">
+                <condition>max-width: 400sp</condition>
+                <setter object="edit_button_wide" property="visible">false</setter>
+                <setter object="edit_button_narrow" property="visible">true</setter>
               </object>
             </child>
           </object>

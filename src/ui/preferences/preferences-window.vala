@@ -188,8 +188,7 @@ namespace Ft
                 var panel = (Ft.PreferencesPanel) GLib.Object.@new (
                         panel_info.content_class,
                         tag: panel_info.name,
-                        title: panel_info.title,
-                        can_pop: false);
+                        title: panel_info.title);
 
                 this.split_view.content = panel;
                 this.split_view.show_content = true;
@@ -209,7 +208,9 @@ namespace Ft
 
         private void on_split_view_collapsed_notify ()
         {
-            this.sidebar.selection_mode = this.split_view.collapsed ? Gtk.SelectionMode.NONE : Gtk.SelectionMode.SINGLE;
+            this.sidebar.selection_mode = this.split_view.collapsed
+                    ? Gtk.SelectionMode.NONE
+                    : Gtk.SelectionMode.SINGLE;
         }
 
         private void on_selection_changed (uint position,

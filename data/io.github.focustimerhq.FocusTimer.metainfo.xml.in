@@ -41,6 +41,14 @@
     <binary>focus-timer</binary>
     <dbus type="user">io.github.focustimerhq.FocusTimer</dbus>
   </provides>
+  <requires>
+    <display_length side="shortest" compare="ge">360</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
   <content_rating type="oars-1.1"/>
   <update_contact>kamilprusko@gmail.com</update_contact>
 
