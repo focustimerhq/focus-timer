@@ -831,11 +831,20 @@ namespace Ft
             }
         }
 
+        public void emit_screen_overlay_opened ()
+        {
+            this.screen_overlay_opened ();
+        }
+
+        public void emit_screen_overlay_closed ()
+        {
+            this.screen_overlay_closed ();
+        }
+
         /**
          * Notify manager that screen overlay has opened.
          */
-        [HasEmitter]
-        public void screen_overlay_opened ()
+        public signal void screen_overlay_opened ()
         {
             if (this.screen_overlay_open_timeout_id != 0U) {
                 GLib.Source.remove (this.screen_overlay_open_timeout_id);
@@ -853,8 +862,7 @@ namespace Ft
         /**
          * Notify manager that screen overlay has closed.
          */
-        [HasEmitter]
-        public void screen_overlay_closed ()
+        public signal void screen_overlay_closed ()
         {
             this.screen_overlay_active = false;
 

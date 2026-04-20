@@ -12,9 +12,9 @@ using GLib;
 namespace Gnome
 {
     /**
-     * Shell extension manages the overlay itself.
+     * Provider for the screen overlay when the extension is enabled.
      *
-     * We only need support manually opening the overlay here.
+     * Extension manages the overlay. Here we only need support for manually opening the overlay.
      */
     public class ScreenOverlayProvider : Ft.Provider, Ft.ScreenOverlayProvider
     {

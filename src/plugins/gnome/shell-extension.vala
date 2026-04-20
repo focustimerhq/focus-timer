@@ -115,7 +115,7 @@ namespace Gnome
                                              string              name,
                                              string              name_owner)
         {
-            if (shell_extensions_proxy != null) {
+            if (this.shell_extensions_proxy != null) {
                 return;
             }
 

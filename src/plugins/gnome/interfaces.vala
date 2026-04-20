@@ -29,6 +29,13 @@ namespace Gnome
     }
 
 
+    [DBus (name = "org.gnome.Shell")]
+    public interface Shell : GLib.Object
+    {
+        public abstract bool overview_active { get; set; }
+    }
+
+
     public enum ExtensionType
     {
         UNKNOWN = 0,

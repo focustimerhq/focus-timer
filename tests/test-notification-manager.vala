@@ -300,7 +300,7 @@ namespace Tests
             assert_cmpstrv (backend.log, {});
 
             // Simulate overlay opened
-            this.notification_manager.screen_overlay_opened ();
+            this.notification_manager.emit_screen_overlay_opened ();
             assert_cmpstrv (backend.log, {
                 "withdraw:timer"
             });
@@ -309,7 +309,7 @@ namespace Tests
             var tick_time = Ft.Timestamp.advance (Ft.Interval.MINUTE);
             this.timer.tick (tick_time);
             backend.clear ();
-            this.notification_manager.screen_overlay_closed ();
+            this.notification_manager.emit_screen_overlay_closed ();
             assert_cmpstrv (backend.log, {
                 @"send:timer:short-break:time-block-running:$(tick_time)"
             });

@@ -78,12 +78,12 @@ namespace Ft
 
         private void on_screen_overlay_opened (Ft.ScreenOverlayProvider provider)
         {
-            this.notification_manager.screen_overlay_opened ();
+            this.notification_manager.emit_screen_overlay_opened ();
         }
 
         private void on_screen_overlay_closed (Ft.ScreenOverlayProvider provider)
         {
-            this.notification_manager.screen_overlay_closed ();
+            this.notification_manager.emit_screen_overlay_closed ();
         }
 
         private void on_provider_selected (Ft.ScreenOverlayProvider provider)
