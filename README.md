@@ -65,12 +65,6 @@ Find a community-maintained package in your distro repos:
 sudo dnf install gnome-pomodoro
 ```
 
-#### Ubuntu / Debian
-
-```bash
-sudo apt install gnome-shell-pomodoro
-```
-
 #### Arch Linux
 
 Install `gnome-shell-pomodoro` from the [AUR](https://aur.archlinux.org/packages/gnome-shell-pomodoro).
