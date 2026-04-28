@@ -28,12 +28,12 @@ If you installed the app via Flathub, restricted permissions hide this panel. Tr
 
 Since boot:
 ```bash
-journalctl --user -t io.github.focustimerhq.FocusTimer
+journalctl --user -b -t io.github.focustimerhq.FocusTimer
 ```
 
 Real-time:
 ```bash
-journalctl --user -t -f io.github.focustimerhq.FocusTimer
+journalctl --user -f -t io.github.focustimerhq.FocusTimer
 ```
 
 With debug output. Run in the terminal and reproduce the issue:
