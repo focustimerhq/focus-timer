@@ -156,6 +156,7 @@ namespace Ft
                     ? parameter.get_int32 () * Ft.Interval.SECOND
                     : Ft.Interval.MINUTE;
 
+            Ft.Context.set_event_source ("timer.extend");
             this.timer.extend (-interval);
         }
 
@@ -166,6 +167,7 @@ namespace Ft
                     ? parameter.get_int32 () * Ft.Interval.SECOND
                     : Ft.Interval.MINUTE;
 
+            Ft.Context.set_event_source ("timer.extend");
             this.timer.extend (interval);
         }
     }

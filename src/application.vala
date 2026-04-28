@@ -496,6 +496,7 @@ namespace Ft
         private void activate_quit (GLib.SimpleAction action,
                                     GLib.Variant?     parameter)
         {
+            Ft.Context.set_event_source ("application.quit");
             this.quit ();
         }
 

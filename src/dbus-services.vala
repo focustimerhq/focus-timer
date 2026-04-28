@@ -125,6 +125,7 @@ namespace Ft
 
         public void quit () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("application.quit");
             this.application.quit ();
         }
 
@@ -168,6 +169,7 @@ namespace Ft
             set {
                 var state = Ft.State.from_string (value);
 
+                Ft.Context.set_event_source (@"session-manager.state:$(value)");
                 this.session_manager.advance_to_state (state);
             }
         }
@@ -395,41 +397,49 @@ namespace Ft
 
         public void start () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("timer.start");
             this.timer.start ();
         }
 
         public void stop () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("timer.reset");
             this.timer.reset ();
         }
 
         public void pause () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("timer.pause");
             this.timer.pause ();
         }
 
         public void resume () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("timer.resume");
             this.timer.resume ();
         }
 
         public void rewind (int64 interval) throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("timer.rewind");
             this.timer.rewind (interval);
         }
 
         public void extend (int64 interval) throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("timer.extend");
             this.timer.extend (interval);
         }
 
         public void skip () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("session-manager.advance");
             this.session_manager.advance ();
         }
 
         public void reset () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("session-manager.reset");
             this.session_manager.reset ();
         }
 
@@ -742,16 +752,19 @@ namespace Ft
 
         public void advance () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("session-manager.advance");
             this.session_manager.advance ();
         }
 
         public void advance_to_state (string state) throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source (@"session-manager.state:$(state)");
             this.session_manager.advance_to_state (Ft.State.from_string (state));
         }
 
         public void reset () throws GLib.DBusError, GLib.IOError
         {
+            Ft.Context.set_event_source ("session-manager.reset");
             this.session_manager.reset ();
         }
 
